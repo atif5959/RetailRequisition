@@ -53,3 +53,19 @@ export const retailItems: RetailItem[] = [
 ];
 
 export const requiredRetailFieldKeys = retailHeaderFields.map((field) => field.key);
+
+export const retailFieldLabels = Object.fromEntries([
+  ...retailHeaderFields.map((field) => [field.key, field.label]),
+  ...retailItems.flatMap((item) => [
+    [item.key, item.label],
+    [item.priceKey, `${item.label} Price`],
+    [item.totalKey, `${item.label} Total`],
+  ]),
+  ['GrandTotal', 'Grand Total'],
+]);
+
+export const retailSubmissionFieldOrder = [
+  ...retailHeaderFields.map((field) => field.key),
+  ...retailItems.flatMap((item) => [item.key, item.priceKey, item.totalKey]),
+  'GrandTotal',
+];
