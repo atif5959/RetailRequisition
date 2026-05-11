@@ -4,6 +4,8 @@ import DashboardNav from '@/components/DashboardNav';
 import { getCurrentProfile } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabaseClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function RequisitionsPage() {
   const profile = await getCurrentProfile();
   if (!profile) redirect('/dashboard/login');

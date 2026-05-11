@@ -1,6 +1,8 @@
 import FormRenderer from '@/components/FormRenderer';
 import { supabaseAdmin } from '@/lib/supabaseClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function RetailFormPage() {
   const supabase = supabaseAdmin();
   const { data: fields } = await supabase

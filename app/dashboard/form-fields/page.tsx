@@ -4,6 +4,8 @@ import FieldManager from '@/components/FieldManager';
 import { getCurrentProfile } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabaseClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function FormFieldsPage() {
   const profile = await getCurrentProfile();
   if (!profile) redirect('/dashboard/login');
