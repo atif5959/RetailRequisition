@@ -110,20 +110,20 @@ export default function HomePage() {
       </header>
 
       {/* ── HERO ── */}
-      <section className="bg-[radial-gradient(ellipse_at_top_right,rgba(252,165,165,0.35),transparent_55%),linear-gradient(160deg,#fff5f5_0%,#ffffff_55%)] py-20 sm:py-28 px-6">
+      <section className="bg-[radial-gradient(ellipse_at_top_right,rgba(252,165,165,0.35),transparent_55%),linear-gradient(160deg,#fff5f5_0%,#ffffff_55%)] py-16 sm:py-24 px-4 sm:px-6">
         <div className="mx-auto max-w-7xl flex justify-center">
-          <div className="space-y-7 text-center max-w-2xl">
+          <div className="space-y-6 text-center max-w-2xl">
             <span className="inline-block bg-red-100 text-red-700 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">
               Retail Operations Platform
             </span>
-            <h1 className="text-5xl sm:text-6xl font-extrabold leading-[1.1] text-slate-900">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] text-slate-900">
               Requisition.<br />
               <span className="text-red-600">Simplified.</span>
             </h1>
-            <p className="text-lg text-slate-500 max-w-md leading-relaxed">
+            <p className="text-base sm:text-lg text-slate-500 max-w-md mx-auto leading-relaxed">
               Submit, track, and manage retail stock requisitions in one place. Fast approvals, real-time visibility, and full control for your team.
             </p>
-            <div className="flex flex-wrap justify-center gap-3 pt-1">
+            <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 pt-1">
               <AppButtonLink href="/form/retail-requisition" designKey="danger" className="text-base px-7 py-3">
                 Submit Requisition →
               </AppButtonLink>
@@ -140,8 +140,8 @@ export default function HomePage() {
       </section>
 
       {/* ── STATS BAR ── */}
-      <section className="bg-slate-900 py-12 px-6">
-        <div className="mx-auto max-w-7xl grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <section className="bg-slate-900 py-10 px-4 sm:px-6">
+        <div className="mx-auto max-w-7xl grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 text-center">
           {stats.map((s) => (
             <div key={s.value}>
               <div className="text-3xl font-black text-red-400">{s.value}</div>
@@ -152,7 +152,7 @@ export default function HomePage() {
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section id="how-it-works" className="py-24 px-6 bg-slate-50">
+      <section id="how-it-works" className="py-14 sm:py-24 px-4 sm:px-6 bg-slate-50">
         <div className="mx-auto max-w-7xl">
           <div className="text-center mb-14">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">How It Works</h2>
@@ -178,7 +178,7 @@ export default function HomePage() {
       </section>
 
       {/* ── FEATURES ── */}
-      <section id="features" className="py-24 px-6 bg-white">
+      <section id="features" className="py-14 sm:py-24 px-4 sm:px-6 bg-white">
         <div className="mx-auto max-w-7xl">
           <div className="text-center mb-14">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Everything You Need</h2>
@@ -202,8 +202,8 @@ export default function HomePage() {
       </section>
 
       {/* ── CTA BANNER ── */}
-      <section className="bg-[linear-gradient(135deg,#b91c1c_0%,#dc2626_45%,#ef4444_100%)] py-20 px-6 text-center">
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
+      <section className="bg-[linear-gradient(135deg,#b91c1c_0%,#dc2626_45%,#ef4444_100%)] py-14 sm:py-20 px-4 sm:px-6 text-center">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-4">
           Ready to submit your requisition?
         </h2>
         <p className="text-red-100 text-lg mb-8 max-w-xl mx-auto text-center">
@@ -218,8 +218,8 @@ export default function HomePage() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="bg-slate-900 text-slate-400 py-10 px-6">
-        <div className="mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-6">
+      <footer className="bg-slate-900 text-slate-400 py-10 px-4 sm:px-6">
+        <div className="mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
           <div className="flex items-center gap-3">
             <img
               src="https://www.cognitoforms.com/file/YlX_ys5JvAugKr0_J7gDB_8tKeqbjCkjA41iDR7EEgPx2m2Fpmmbl9fVpkvn8r2t"

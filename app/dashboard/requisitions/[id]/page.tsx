@@ -31,19 +31,19 @@ export default async function RequisitionDetail({ params }: { params: Promise<{ 
   const badge = statusConfig[status] ?? { label: status, classes: 'bg-slate-100 text-slate-600' };
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex flex-col md:flex-row min-h-screen bg-slate-50">
       <DashboardNav role={profile.role} />
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* Top bar */}
-        <header className="bg-white border-b border-slate-200 px-8 py-5">
+        <header className="bg-white border-b border-slate-200 px-4 sm:px-8 py-4 sm:py-5">
           <div className="flex items-center gap-2 text-xs text-slate-400 font-semibold mb-1">
             <Link href="/dashboard/requisitions" className="hover:text-red-600 transition">Requisitions</Link>
             <span>/</span>
             <span className="text-slate-600">Detail</span>
           </div>
-          <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-extrabold text-slate-900">Requisition Detail</h1>
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900">Requisition Detail</h1>
             <span className={`text-xs font-bold px-3 py-1 rounded-full ${badge.classes}`}>{badge.label}</span>
           </div>
         </header>

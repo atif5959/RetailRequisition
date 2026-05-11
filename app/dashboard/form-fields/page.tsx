@@ -15,10 +15,10 @@ export default async function FormFieldsPage() {
   const { data: fields } = await supabase.from('form_fields').select('*').order('sort_order', { ascending: true });
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex flex-col md:flex-row min-h-screen bg-slate-50">
       <DashboardNav role={profile.role} />
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="bg-white border-b border-slate-200 px-8 py-5 flex items-center justify-between">
+        <header className="bg-white border-b border-slate-200 px-4 sm:px-8 py-4 sm:py-5 flex items-center justify-between gap-3">
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-0.5">Dashboard</p>
             <h1 className="text-2xl font-extrabold text-slate-900">Form Fields</h1>
@@ -30,7 +30,7 @@ export default async function FormFieldsPage() {
             Manage requisition form fields
           </div>
         </header>
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 sm:p-8">
           <FieldManager fields={fields || []} />
         </main>
       </div>

@@ -36,7 +36,7 @@ export default async function RetailFormPage() {
       </div>
 
       {/* Form */}
-      <main className="flex-1 py-8 px-4 sm:px-6">
+      <main className="flex-1 py-6 sm:py-8 px-3 sm:px-6">
         <div className="mx-auto max-w-7xl">
           <RetailRequisitionForm />
         </div>
