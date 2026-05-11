@@ -16,9 +16,10 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
     const supabase = supabaseBrowser();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) setError(error.message);
+    else if (!data.user) setError('Login failed. Please check the email and password.');
     else {
       router.refresh();
       router.push('/dashboard/requisitions');
