@@ -113,7 +113,7 @@ export default function HomePage() {
       <section className="bg-[radial-gradient(ellipse_at_top_right,rgba(252,165,165,0.35),transparent_55%),linear-gradient(160deg,#fff5f5_0%,#ffffff_55%)] py-16 sm:py-24 px-4 sm:px-6">
         <div className="mx-auto max-w-7xl flex justify-center">
           <div className="space-y-6 text-center max-w-2xl">
-            <span className="inline-block bg-red-100 text-red-700 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">
+<span className="inline-block bg-red-100 text-red-700 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">
               Retail Operations Platform
             </span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] text-slate-900">

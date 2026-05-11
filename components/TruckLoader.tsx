@@ -30,8 +30,16 @@ export default function TruckLoader({ compact = false }: TruckLoaderProps) {
             />
             <rect strokeWidth="2" stroke="#282828" fill="#FFFCAB" rx="1" height="7" width="5" y="63" x="187" />
             <rect strokeWidth="2" stroke="#282828" fill="#282828" rx="1" height="11" width="4" y="81" x="193" />
-            <rect strokeWidth="3" stroke="#282828" fill="#DFDFDF" rx="2.5" height="90" width="121" y="1.5" x="6.5" />
+            <rect strokeWidth="3" stroke="#282828" fill="#ffffff" rx="2.5" height="90" width="121" y="1.5" x="6.5" />
             <rect strokeWidth="2" stroke="#282828" fill="#DFDFDF" rx="2" height="4" width="6" y="84" x="1" />
+            <image
+              href="https://www.cognitoforms.com/file/YlX_ys5JvAugKr0_J7gDB_8tKeqbjCkjA41iDR7EEgPx2m2Fpmmbl9fVpkvn8r2t"
+              x="20"
+              y="31"
+              width="89"
+              height="32"
+              preserveAspectRatio="xMidYMid meet"
+            />
           </svg>
         </div>
         <div className="truckTires">
