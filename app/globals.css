@@ -2,5 +2,195 @@
 @tailwind components;
 @tailwind utilities;
 
-body { background: #f8fafc; color: #0f172a; }
-input, select, textarea { outline: none; }
+body {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+input,
+select,
+textarea {
+  outline: none;
+}
+
+@keyframes retail-form-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes retail-row-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes retail-logo-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.035);
+  }
+}
+
+@keyframes retail-message-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.retail-form-shell {
+  animation: retail-form-enter 420ms ease-out both;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0)),
+    rgba(136, 140, 144, 0.95);
+  border: 1px solid rgba(15, 23, 42, 0.22);
+  border-radius: 8px;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+}
+
+.retail-form-header {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.16)),
+    #cecece;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.18);
+}
+
+.retail-logo {
+  animation: retail-logo-pulse 3.6s ease-in-out infinite;
+  filter: drop-shadow(0 8px 12px rgba(15, 23, 42, 0.18));
+}
+
+.retail-section {
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.retail-field-label span {
+  display: inline-block;
+  margin-bottom: 2px;
+}
+
+.retail-input,
+.retail-readonly-input,
+.retail-total-input,
+.retail-grand-total {
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease,
+    background-color 160ms ease;
+}
+
+.retail-input:focus {
+  transform: translateY(-1px);
+}
+
+.retail-table-wrap {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
+}
+
+.retail-table-head {
+  background: linear-gradient(180deg, #f8fafc, #e2e8f0);
+  color: #111827;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.retail-table-head th {
+  border-bottom: 1px solid rgba(100, 116, 139, 0.35);
+}
+
+.retail-item-row {
+  animation: retail-row-enter 280ms ease-out both;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.95);
+  transition:
+    background-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.retail-item-row:nth-child(even) {
+  background: #fbfdff;
+}
+
+.retail-item-row:hover {
+  background: #fff7f7;
+  box-shadow: inset 3px 0 0 #ec0c0c;
+}
+
+.retail-grand-row {
+  background: linear-gradient(180deg, #f1f5f9, #e2e8f0);
+  border-top: 2px solid rgba(15, 23, 42, 0.16);
+}
+
+.retail-grand-total {
+  letter-spacing: 0;
+}
+
+.retail-submit-button {
+  background: linear-gradient(180deg, #ff2323, #d70707);
+  border-radius: 5px;
+  box-shadow: 0 10px 22px rgba(127, 29, 29, 0.3);
+  min-width: 140px;
+  transition:
+    box-shadow 160ms ease,
+    transform 160ms ease,
+    filter 160ms ease;
+}
+
+.retail-submit-button:hover:not(:disabled) {
+  box-shadow: 0 14px 28px rgba(127, 29, 29, 0.38);
+  filter: saturate(1.04);
+  transform: translateY(-1px);
+}
+
+.retail-submit-button:active:not(:disabled) {
+  box-shadow: 0 8px 18px rgba(127, 29, 29, 0.3);
+  transform: translateY(0);
+}
+
+.retail-message {
+  animation: retail-message-enter 220ms ease-out both;
+  background: #ffffff;
+  border: 1px solid rgba(22, 163, 74, 0.24);
+  border-radius: 6px;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retail-form-shell,
+  .retail-item-row,
+  .retail-logo,
+  .retail-message {
+    animation: none;
+  }
+
+  .retail-input,
+  .retail-submit-button,
+  .retail-item-row {
+    transition: none;
+  }
+}

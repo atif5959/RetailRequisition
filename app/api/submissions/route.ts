@@ -1,17 +1,15 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseClient';
+import { requiredRetailFieldKeys } from '@/lib/retailRequisitionFields';
 
 export async function POST(req: Request) {
   const body = await req.json();
   const values = body.values || {};
   const supabase = supabaseAdmin();
 
-  const { data: fields, error: fieldError } = await supabase.from('form_fields').select('*').eq('is_active', true);
-  if (fieldError) return NextResponse.json({ error: fieldError.message }, { status: 500 });
-
-  for (const field of fields || []) {
-    if (field.required && (values[field.field_key] === undefined || values[field.field_key] === '')) {
-      return NextResponse.json({ error: `${field.label} is required.` }, { status: 400 });
+  for (const fieldKey of requiredRetailFieldKeys) {
+    if (values[fieldKey] === undefined || values[fieldKey] === '') {
+      return NextResponse.json({ error: `${fieldKey} is required.` }, { status: 400 });
     }
   }
 

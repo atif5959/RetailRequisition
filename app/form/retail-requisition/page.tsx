@@ -1,24 +1,12 @@
-import FormRenderer from '@/components/FormRenderer';
-import { supabaseAdmin } from '@/lib/supabaseClient';
+import RetailRequisitionForm from '@/components/RetailRequisitionForm';
 
 export const dynamic = 'force-dynamic';
 
 export default async function RetailFormPage() {
-  const supabase = supabaseAdmin();
-  const { data: fields } = await supabase
-    .from('form_fields')
-    .select('*')
-    .eq('is_active', true)
-    .order('sort_order', { ascending: true });
-
   return (
-    <main className="min-h-screen p-6">
-      <div className="max-w-3xl mx-auto space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Retail Requisition Form</h1>
-          <p className="text-slate-600 mt-2">Please fill the required details and submit your request.</p>
-        </div>
-        <FormRenderer fields={fields || []} />
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.45),transparent_32%),linear-gradient(135deg,#fca5a5_0%,#ef4444_46%,#fee2e2_100%)] bg-cover bg-center p-4 sm:p-8">
+      <div className="mx-auto max-w-[1220px]">
+        <RetailRequisitionForm />
       </div>
     </main>
   );
