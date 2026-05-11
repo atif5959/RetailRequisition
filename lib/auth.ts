@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
+import { supabaseAdmin } from '@/lib/supabaseClient';
 
 export async function createSupabaseServerClient() {
   const cookieStore = await cookies();
@@ -26,6 +27,7 @@ export async function getCurrentProfile() {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
-  const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+  const admin = supabaseAdmin();
+  const { data } = await admin.from('profiles').select('*').eq('id', user.id).single();
   return data;
 }
