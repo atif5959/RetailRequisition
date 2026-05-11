@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import LogoutButton from '@/components/LogoutButton';
 
 export default function DashboardNav({ role }: { role?: string }) {
   return (
@@ -8,6 +9,7 @@ export default function DashboardNav({ role }: { role?: string }) {
         <Link className="block p-2 rounded hover:bg-slate-100" href="/dashboard/requisitions">Requisitions</Link>
         {role === 'super_admin' && <Link className="block p-2 rounded hover:bg-slate-100" href="/dashboard/form-fields">Form Fields</Link>}
         {role === 'super_admin' && <Link className="block p-2 rounded hover:bg-slate-100" href="/dashboard/users">Users</Link>}
+        <LogoutButton />
       </nav>
     </aside>
   );

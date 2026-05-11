@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseClient';
-import { requiredRetailFieldKeys, retailFieldLabels, retailHeaderFields, retailItems, retailSubmissionFieldOrder } from '@/lib/retailRequisitionFields';
+import { getInHandStockKey, requiredRetailFieldKeys, retailFieldLabels, retailHeaderFields, retailItems, retailSubmissionFieldOrder } from '@/lib/retailRequisitionFields';
+import { isPakistanRegion } from '@/lib/regions';
 
 function formatAmount(value: number) {
   return value.toFixed(2);
@@ -39,15 +40,25 @@ export async function POST(req: Request) {
     normalizedValues[field.key] = String(values[field.key] ?? '').trim();
   }
 
+  if (!isPakistanRegion(normalizedValues.Region)) {
+    return NextResponse.json({ error: 'Please select a valid region.' }, { status: 400 });
+  }
+
   let grandTotal = 0;
   for (const item of retailItems) {
+    const stockKey = getInHandStockKey(item.key);
+    const stock = normalizeQuantity(values[stockKey]);
     const quantity = normalizeQuantity(values[item.key]);
+    if (stock === null) {
+      return NextResponse.json({ error: `${item.label} in hand stock must be zero or greater.` }, { status: 400 });
+    }
     if (quantity === null) {
       return NextResponse.json({ error: `${item.label} quantity must be zero or greater.` }, { status: 400 });
     }
 
     const total = quantity * item.price;
     grandTotal += total;
+    normalizedValues[stockKey] = String(stock);
     normalizedValues[item.key] = String(quantity);
     normalizedValues[item.priceKey] = formatAmount(item.price);
     normalizedValues[item.totalKey] = formatAmount(total);
@@ -56,7 +67,7 @@ export async function POST(req: Request) {
 
   const { data: submission, error } = await supabase
     .from('form_submissions')
-    .insert({ status: 'pending' })
+    .insert({ status: 'pending', region: normalizedValues.Region })
     .select()
     .single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

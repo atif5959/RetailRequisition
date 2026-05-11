@@ -6,7 +6,12 @@ export type RetailItem = {
   price: number;
 };
 
+export function getInHandStockKey(itemKey: string) {
+  return `${itemKey}InHandStock`;
+}
+
 export const retailHeaderFields = [
+  { key: 'Region', label: 'Region', type: 'select' },
   { key: 'RouteCode', label: 'Route Code' },
   { key: 'EmpCode', label: 'Emp Code' },
   { key: 'Location', label: 'Location' },
@@ -58,6 +63,7 @@ export const retailFieldLabels = Object.fromEntries([
   ...retailHeaderFields.map((field) => [field.key, field.label]),
   ...retailItems.flatMap((item) => [
     [item.key, item.label],
+    [getInHandStockKey(item.key), `${item.label} In Hand Stock`],
     [item.priceKey, `${item.label} Price`],
     [item.totalKey, `${item.label} Total`],
   ]),
@@ -66,6 +72,6 @@ export const retailFieldLabels = Object.fromEntries([
 
 export const retailSubmissionFieldOrder = [
   ...retailHeaderFields.map((field) => field.key),
-  ...retailItems.flatMap((item) => [item.key, item.priceKey, item.totalKey]),
+  ...retailItems.flatMap((item) => [getInHandStockKey(item.key), item.key, item.priceKey, item.totalKey]),
   'GrandTotal',
 ];

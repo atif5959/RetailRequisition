@@ -3,9 +3,35 @@ create extension if not exists "uuid-ossp";
 create table if not exists profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   email text not null,
-  role text not null check (role in ('admin', 'super_admin')) default 'admin',
+  role text not null check (role in ('admin', 'head', 'super_admin')) default 'admin',
+  region text,
   created_at timestamptz not null default now()
 );
+
+alter table profiles add column if not exists region text;
+
+alter table profiles drop constraint if exists profiles_role_check;
+alter table profiles add constraint profiles_role_check check (role in ('admin', 'head', 'super_admin'));
+
+create table if not exists regions (
+  name text primary key
+);
+
+insert into regions (name)
+values
+('Karachi'),
+('Lahore'),
+('Islamabad'),
+('Rawalpindi'),
+('Quetta'),
+('Gujranwala'),
+('Sialkot'),
+('Faisalabad'),
+('Multan'),
+('Sukkur'),
+('Hyderabad'),
+('Peshawar')
+on conflict (name) do nothing;
 
 create table if not exists form_fields (
   id uuid primary key default uuid_generate_v4(),
@@ -22,9 +48,12 @@ create table if not exists form_fields (
 create table if not exists form_submissions (
   id uuid primary key default uuid_generate_v4(),
   status text not null check (status in ('pending','approved','rejected')) default 'pending',
+  region text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table form_submissions add column if not exists region text;
 
 create table if not exists form_submission_values (
   id uuid primary key default uuid_generate_v4(),

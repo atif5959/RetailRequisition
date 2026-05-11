@@ -1,6 +1,76 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+.app-button-default {
+  background-color: #3b82f6 !important;
+  border-color: transparent !important;
+  border-radius: 9999px !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  padding: 0.5rem 1rem !important;
+}
+
+.app-button-default:hover {
+  background-color: #1d4ed8 !important;
+}
+
+.app-button-danger {
+  background-color: #dc2626 !important;
+  border-color: transparent !important;
+  border-radius: 9999px !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  padding: 0.5rem 1rem !important;
+}
+
+.app-button-danger:hover {
+  background-color: #b91c1c !important;
+}
+
+.app-select {
+  appearance: none;
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #334155 50%),
+    linear-gradient(135deg, #334155 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 3px),
+    calc(100% - 13px) calc(50% - 3px);
+  background-repeat: no-repeat;
+  background-size:
+    5px 5px,
+    5px 5px;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  color: #0f172a;
+  font-size: 0.875rem;
+  font-weight: 600;
+  min-height: 44px;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+  width: 100%;
+}
+
+.app-select:hover {
+  border-color: #fecaca;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.1);
+}
+
+.app-select:focus {
+  background-color: #ffffff;
+  border-color: #ff6568;
+  box-shadow: 0 0 0 4px #ffe2e2;
+  outline: none;
+}
+
+.app-select option {
+  background: #ffffff;
+  color: #0f172a;
+  font-weight: 500;
+}
 
 body {
   background: #f8fafc;
@@ -11,6 +81,174 @@ input,
 select,
 textarea {
   outline: none;
+}
+
+.loader {
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader:not(.truck-loader-compact) {
+  transform: scale(3);
+  transform-origin: center;
+}
+
+.truckWrapper {
+  width: 200px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+  justify-content: flex-end;
+  overflow-x: hidden;
+}
+
+.truckBody {
+  width: 130px;
+  height: fit-content;
+  margin-bottom: 6px;
+  animation: motion 1s linear infinite;
+}
+
+@keyframes motion {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.truckTires {
+  width: 130px;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 10px 0px 15px;
+  position: absolute;
+  bottom: 0;
+}
+
+.truckTires svg {
+  width: 24px;
+}
+
+.road {
+  width: 100%;
+  height: 1.5px;
+  background-color: #282828;
+  position: relative;
+  bottom: 0;
+  align-self: flex-end;
+  border-radius: 3px;
+}
+
+.road::before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 100%;
+  background-color: #282828;
+  right: -50%;
+  border-radius: 3px;
+  animation: roadAnimation 1.4s linear infinite;
+  border-left: 10px solid white;
+}
+
+.road::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 100%;
+  background-color: #282828;
+  right: -65%;
+  border-radius: 3px;
+  animation: roadAnimation 1.4s linear infinite;
+  border-left: 4px solid white;
+}
+
+.lampPost {
+  position: absolute;
+  bottom: 0;
+  right: -90%;
+  height: 90px;
+  animation: roadAnimation 1.4s linear infinite;
+}
+
+@keyframes roadAnimation {
+  0% {
+    transform: translateX(0px);
+  }
+  100% {
+    transform: translateX(-350px);
+  }
+}
+
+.truck-loader-compact {
+  height: 40px;
+  overflow: hidden;
+  width: 84px;
+}
+
+.truck-loader-compact .truckWrapper {
+  flex: 0 0 auto;
+  transform: scale(0.42);
+  transform-origin: center;
+}
+
+@keyframes api-loader-bounce {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0.45;
+  }
+  40% {
+    transform: translateY(-5px) scale(1);
+    opacity: 1;
+  }
+}
+
+.api-loader {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 16px;
+  width: 28px;
+}
+
+.api-loader span {
+  animation: api-loader-bounce 860ms ease-in-out infinite;
+  border-radius: 999px;
+  display: block;
+  height: 7px;
+  width: 7px;
+}
+
+.api-loader span:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.api-loader span:nth-child(3) {
+  animation-delay: 240ms;
+}
+
+.api-loader-light span {
+  background: #ffffff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.65);
+}
+
+.api-loader-dark span {
+  background: #dc2626;
+  box-shadow: 0 0 10px rgba(220, 38, 38, 0.28);
 }
 
 @keyframes retail-form-enter {
@@ -184,7 +422,12 @@ textarea {
   .retail-form-shell,
   .retail-item-row,
   .retail-logo,
-  .retail-message {
+  .retail-message,
+  .api-loader span,
+  .truckBody,
+  .road::before,
+  .road::after,
+  .lampPost {
     animation: none;
   }
 

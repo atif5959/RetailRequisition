@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { AppButton } from '@/components/AppButton';
+import ApiLoader from '@/components/ApiLoader';
 import { supabaseBrowser } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 
@@ -15,14 +17,17 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError('');
-    const supabase = supabaseBrowser();
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (error) setError(error.message);
-    else if (!data.user) setError('Login failed. Please check the email and password.');
-    else {
-      router.refresh();
-      router.push('/dashboard/requisitions');
+    try {
+      const supabase = supabaseBrowser();
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) setError(error.message);
+      else if (!data.user) setError('Login failed. Please check the email and password.');
+      else {
+        router.refresh();
+        router.push('/dashboard/requisitions');
+      }
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -32,7 +37,7 @@ export default function LoginPage() {
         <h1 className="text-2xl font-bold">Dashboard Login</h1>
         <input className="w-full border rounded-lg p-3" placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <input className="w-full border rounded-lg p-3" placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <button disabled={loading} className="w-full bg-slate-900 text-white rounded-lg py-3">{loading ? 'Signing in...' : 'Login'}</button>
+        <AppButton disabled={loading} type="submit" className="w-full">{loading ? <ApiLoader label="Signing in" /> : 'Login'}</AppButton>
         {error && <p className="text-red-600 text-sm">{error}</p>}
       </form>
     </main>

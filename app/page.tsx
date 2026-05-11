@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { AppButtonLink } from '@/components/AppButton';
 
 export default function HomePage() {
   return (
@@ -7,8 +7,8 @@ export default function HomePage() {
         <h1 className="text-3xl font-bold">Retail Requisition</h1>
         <p className="text-slate-600">Submit a requisition or access the dashboard.</p>
         <div className="flex gap-3">
-          <Link className="px-4 py-2 rounded-lg bg-slate-900 text-white" href="/form/retail-requisition">Open Form</Link>
-          <Link className="px-4 py-2 rounded-lg border" href="/dashboard/login">Dashboard</Link>
+          <AppButtonLink href="/form/retail-requisition">Open Form</AppButtonLink>
+          <AppButtonLink href="/dashboard/login">Dashboard</AppButtonLink>
         </div>
       </div>
     </main>
