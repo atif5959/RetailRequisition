@@ -73,8 +73,7 @@ export default function DashboardNav({ role }: { role?: string }) {
       <aside className="hidden md:flex w-72 flex-shrink-0 bg-slate-900 min-h-screen flex-col">
         <div className="px-6 py-6 border-b border-slate-700/60">
           <Link href="/" className="flex items-center gap-3">
-            <img src={LOGO} alt="Logo" className="h-9 w-auto brightness-0 invert opacity-90" />
-            <span className="font-extrabold text-lg text-white tracking-tight">RetailReq</span>
+            <img src={LOGO} alt="Logo" className="h-10 w-auto brightness-0 invert opacity-90" />
           </Link>
         </div>
         <div className="px-6 pt-6 pb-2">
@@ -89,8 +88,7 @@ export default function DashboardNav({ role }: { role?: string }) {
       {/* ── MOBILE TOP BAR ── */}
       <div className="md:hidden flex items-center justify-between bg-slate-900 px-4 py-3 border-b border-slate-700/60">
         <Link href="/" className="flex items-center gap-2">
-          <img src={LOGO} alt="Logo" className="h-8 w-auto brightness-0 invert opacity-90" />
-          <span className="font-extrabold text-white">RetailReq</span>
+          <img src={LOGO} alt="Logo" className="h-9 w-auto brightness-0 invert opacity-90" />
         </Link>
         <button
           onClick={() => setOpen(true)}
@@ -110,8 +108,7 @@ export default function DashboardNav({ role }: { role?: string }) {
           <div className="w-72 max-w-[85vw] bg-slate-900 flex flex-col shadow-2xl">
             <div className="px-4 py-4 border-b border-slate-700/60 flex items-center justify-between">
               <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-2">
-                <img src={LOGO} alt="Logo" className="h-8 w-auto brightness-0 invert opacity-90" />
-                <span className="font-extrabold text-white">RetailReq</span>
+                <img src={LOGO} alt="Logo" className="h-9 w-auto brightness-0 invert opacity-90" />
               </Link>
               <button
                 onClick={() => setOpen(false)}

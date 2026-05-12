@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import RetailRequisitionForm from '@/components/RetailRequisitionForm';
+import { getRetailItems } from '@/lib/getRetailItems';
 
 export const dynamic = 'force-dynamic';
 
 export default async function RetailFormPage() {
+  const items = await getRetailItems();
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
 
@@ -14,9 +16,8 @@ export default async function RetailFormPage() {
             <img
               src="https://www.cognitoforms.com/file/YlX_ys5JvAugKr0_J7gDB_8tKeqbjCkjA41iDR7EEgPx2m2Fpmmbl9fVpkvn8r2t"
               alt="Logo"
-              className="h-10 w-auto"
+              className="h-11 w-auto"
             />
-            <span className="font-extrabold text-xl text-slate-900 tracking-tight hidden sm:inline">RetailReq</span>
           </Link>
           <Link
             href="/"
@@ -38,7 +39,7 @@ export default async function RetailFormPage() {
       {/* Form */}
       <main className="flex-1 py-6 sm:py-8 px-3 sm:px-6">
         <div className="mx-auto max-w-7xl">
-          <RetailRequisitionForm />
+          <RetailRequisitionForm items={items} />
         </div>
       </main>
 

@@ -2,8 +2,11 @@
 
 import { useMemo, useState } from 'react';
 import ApiLoader from '@/components/ApiLoader';
-import { getInHandStockKey, retailHeaderFields, retailItems } from '@/lib/retailRequisitionFields';
+import { getInHandStockKey, retailHeaderFields } from '@/lib/retailRequisitionFields';
+import type { RetailItem } from '@/lib/retailRequisitionFields';
 import { pakistanRegions } from '@/lib/regions';
+
+
 
 type HeaderValues = Record<(typeof retailHeaderFields)[number]['key'], string>;
 type QuantityValues = Record<string, string>;
@@ -29,9 +32,9 @@ const inputClass =
 const numInputClass =
   'w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-right text-sm font-semibold text-slate-900 focus:border-red-400 focus:ring-4 focus:ring-red-100 focus:outline-none transition';
 
-export default function RetailRequisitionForm() {
+export default function RetailRequisitionForm({ items }: { items: RetailItem[] }) {
   const [headerValues, setHeaderValues] = useState<HeaderValues>({
-    Region: '', RouteCode: '', EmpCode: '', Location: '', Origin: '',
+    Region: '', RouteCode: 'X', EmpCode: '', Location: '', Origin: '',
   });
   const [stocks, setStocks]       = useState<StockValues>({});
   const [quantities, setQuantities] = useState<QuantityValues>({});
@@ -40,7 +43,7 @@ export default function RetailRequisitionForm() {
   const [error, setError]         = useState('');
 
   const itemTotals = useMemo(() =>
-    retailItems.reduce<Record<string, number>>((acc, item) => {
+    items.reduce<Record<string, number>>((acc, item) => {
       acc[item.totalKey] = toQuantity(quantities[item.key] || '') * item.price;
       return acc;
     }, {}),
@@ -56,7 +59,7 @@ export default function RetailRequisitionForm() {
     setError('');
 
     const values: Record<string, string> = { ...headerValues };
-    retailItems.forEach((item) => {
+    items.forEach((item) => {
       const stockKey = getInHandStockKey(item.key);
       values[stockKey]    = stocks[stockKey] || '';
       values[item.key]    = quantities[item.key] || '';
@@ -139,15 +142,53 @@ export default function RetailRequisitionForm() {
                   <option value="">Select region</option>
                   {pakistanRegions.map((r) => <option key={r} value={r}>{r}</option>)}
                 </select>
-              ) : (
+              ) : field.key === 'RouteCode' ? (
                 <input
                   name={field.key}
                   value={headerValues[field.key]}
-                  onChange={(e) => setHeaderValues((c) => ({ ...c, [field.key]: e.target.value }))}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (!val.startsWith('X')) return;
+                    setHeaderValues((c) => ({ ...c, RouteCode: val }));
+                  }}
                   required
                   className={inputClass}
                 />
-              )}
+              ) : field.key === 'EmpCode' ? (
+                <input
+                  name={field.key}
+                  value={headerValues[field.key]}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '');
+                    setHeaderValues((c) => ({ ...c, EmpCode: val }));
+                  }}
+                  inputMode="numeric"
+                  required
+                  className={inputClass}
+                />
+              ) : field.key === 'Location' ? (
+                <input
+                  name={field.key}
+                  value={headerValues[field.key]}
+                  onChange={(e) => {
+                    setHeaderValues((c) => ({ ...c, Location: e.target.value.toUpperCase() }));
+                  }}
+                  required
+                  className={inputClass}
+                />
+              ) : field.key === 'Origin' ? (
+                <input
+                  name={field.key}
+                  value={headerValues[field.key]}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^A-Za-z]/g, '').toUpperCase().slice(0, 3);
+                    setHeaderValues((c) => ({ ...c, Origin: val }));
+                  }}
+                  maxLength={3}
+                  required
+                  className={inputClass}
+                />
+              ) : null}
             </label>
           ))}
         </div>
@@ -162,7 +203,59 @@ export default function RetailRequisitionForm() {
           <h2 className="text-sm font-bold uppercase tracking-wider text-slate-200">Stock Items</h2>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* ── Mobile card layout ── */}
+        <div className="md:hidden divide-y divide-slate-100">
+          {items.map((item) => {
+            const stockKey = getInHandStockKey(item.key);
+            return (
+              <div key={item.key} className="p-4 space-y-3">
+                {/* Name + Price */}
+                <div className="flex items-start justify-between gap-3">
+                  <span className="text-sm font-bold text-slate-800 uppercase leading-snug flex-1">{item.label}</span>
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Price</p>
+                    <p className="text-sm font-semibold text-slate-700">{formatAmount(item.price)}</p>
+                  </div>
+                </div>
+                {/* In Hand Stock + Quantity */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-400">In Hand Stock</label>
+                    <input
+                      name={stockKey}
+                      type="number"
+                      min="0"
+                      step="1"
+                      value={stocks[stockKey] || ''}
+                      onChange={(e) => setStocks((c) => ({ ...c, [stockKey]: e.target.value }))}
+                      className={numInputClass}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Quantity</label>
+                    <input
+                      name={item.key}
+                      type="number"
+                      min="0"
+                      step="1"
+                      value={quantities[item.key] || ''}
+                      onChange={(e) => setQuantities((c) => ({ ...c, [item.key]: e.target.value }))}
+                      className={numInputClass}
+                    />
+                  </div>
+                </div>
+                {/* Total */}
+                <div className="flex items-center justify-between bg-red-50 rounded-lg px-3 py-2 border border-red-100">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Total</span>
+                  <span className="text-sm font-bold text-red-600">{formatAmount(itemTotals[item.totalKey] || 0)}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ── Desktop table layout ── */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full min-w-[820px] text-sm">
             <thead>
               <tr className="bg-slate-100 border-b border-slate-200">
@@ -174,35 +267,22 @@ export default function RetailRequisitionForm() {
               </tr>
             </thead>
             <tbody>
-              {retailItems.map((item, index) => {
+              {items.map((item, index) => {
                 const stockKey = getInHandStockKey(item.key);
                 return (
-                  <tr
-                    key={item.key}
-                    className={`border-t border-slate-100 hover:bg-red-50/30 transition ${index % 2 === 1 ? 'bg-slate-50/50' : ''}`}
-                  >
+                  <tr key={item.key} className={`border-t border-slate-100 hover:bg-red-50/30 transition ${index % 2 === 1 ? 'bg-slate-50/50' : ''}`}>
                     <td className="px-5 py-3 font-semibold text-slate-800">{item.label}</td>
                     <td className="px-5 py-3">
-                      <input
-                        name={stockKey}
-                        type="number"
-                        min="0"
-                        step="1"
+                      <input name={stockKey} type="number" min="0" step="1"
                         value={stocks[stockKey] || ''}
                         onChange={(e) => setStocks((c) => ({ ...c, [stockKey]: e.target.value }))}
-                        className={numInputClass}
-                      />
+                        className={numInputClass} />
                     </td>
                     <td className="px-5 py-3">
-                      <input
-                        name={item.key}
-                        type="number"
-                        min="0"
-                        step="1"
+                      <input name={item.key} type="number" min="0" step="1"
                         value={quantities[item.key] || ''}
                         onChange={(e) => setQuantities((c) => ({ ...c, [item.key]: e.target.value }))}
-                        className={numInputClass}
-                      />
+                        className={numInputClass} />
                     </td>
                     <td className="px-5 py-3">
                       <div className="text-right px-3 py-2.5 text-sm font-semibold text-slate-500 bg-slate-50 rounded-lg border border-slate-200">
@@ -231,11 +311,11 @@ export default function RetailRequisitionForm() {
       </div>
 
       {/* Submit */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex items-center gap-2 bg-red-600 text-white font-bold px-10 py-3.5 rounded-full hover:bg-red-700 transition shadow disabled:opacity-60 disabled:cursor-not-allowed text-sm"
+          className="inline-flex items-center justify-center gap-2 bg-red-600 text-white font-bold px-10 py-3.5 rounded-full hover:bg-red-700 transition shadow disabled:opacity-60 disabled:cursor-not-allowed text-sm w-full sm:w-auto"
         >
           {loading ? <ApiLoader label="Submitting" /> : 'Submit Requisition →'}
         </button>

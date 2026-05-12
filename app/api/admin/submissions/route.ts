@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import { getCurrentProfile } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabaseClient';
 
-const PAGE_SIZE = 15;
-const searchFieldKeys = ['RouteCode', 'Location', 'Origin'];
+const PAGE_SIZE = 10;
+const searchFieldKeys = ['RouteCode', 'EmpCode', 'Location', 'Origin'];
 const pakistanTimeZoneOffset = '+05:00';
 
 type SubmissionRow = {
@@ -12,6 +12,7 @@ type SubmissionRow = {
   region: string | null;
   created_at: string;
   routeCode?: string;
+  empCode?: string;
   location?: string;
   origin?: string;
 };
@@ -104,10 +105,40 @@ async function withHeaderValues(rows: any[]) {
       region: row.region,
       created_at: row.created_at,
       routeCode: headers.RouteCode || '',
+      empCode: headers.EmpCode || '',
       location: headers.Location || '',
       origin: headers.Origin || '',
     };
   });
+}
+
+export async function DELETE(req: Request) {
+  const profile = await getCurrentProfile();
+  if (!profile) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (profile.role !== 'super_admin' && profile.role !== 'head') {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
+
+  const { ids } = (await req.json()) as { ids: string[] };
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return NextResponse.json({ error: 'No IDs provided' }, { status: 400 });
+  }
+
+  const supabase = supabaseAdmin();
+
+  if (profile.role === 'head') {
+    const { data: subs } = await supabase
+      .from('form_submissions')
+      .select('id, region')
+      .in('id', ids);
+    if (subs?.some((s) => s.region !== profile.region)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+  }
+
+  const { error } = await supabase.from('form_submissions').delete().in('id', ids);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ success: true, deleted: ids.length });
 }
 
 export async function GET(req: Request) {
@@ -121,29 +152,28 @@ export async function GET(req: Request) {
   const dateRange = getDateRange(searchParams);
   const supabase = supabaseAdmin();
 
-  let query = supabase.from('form_submissions').select('*').order('created_at', { ascending: false });
+  let query = supabase.from('form_submissions').select('*', { count: 'exact' }).order('created_at', { ascending: false });
 
   if (dateRange.from) query = query.gte('created_at', dateRange.from);
   if (dateRange.to) query = query.lte('created_at', dateRange.to);
 
   if (profile.role !== 'super_admin') {
     if (!profile.region) {
-      return NextResponse.json({ rows: [], nextOffset: null, hasMore: false });
+      return NextResponse.json({ rows: [], total: 0 });
     }
     query = query.eq('region', profile.region);
+  } else {
+    const regionParam = String(searchParams.get('region') || '').trim();
+    const regions = regionParam ? regionParam.split(',').map(r => r.trim()).filter(Boolean) : [];
+    if (regions.length > 0) query = query.in('region', regions);
   }
 
   if (!search) {
-    const { data, error } = await query.range(offset, offset + limit);
+    const { data, error, count } = await query.range(offset, offset + limit - 1);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-    const hydratedRows = await withHeaderValues(data || []);
-    const rows = hydratedRows.slice(0, limit);
-    return NextResponse.json({
-      rows,
-      nextOffset: rows.length === limit ? offset + limit : null,
-      hasMore: hydratedRows.length > limit,
-    });
+    const rows = await withHeaderValues(data || []);
+    return NextResponse.json({ rows, total: count ?? 0 });
   }
 
   const { data, error } = await query.limit(1000);
@@ -155,9 +185,5 @@ export async function GET(req: Request) {
   });
   const rows = filteredRows.slice(offset, offset + limit);
 
-  return NextResponse.json({
-    rows,
-    nextOffset: offset + limit < filteredRows.length ? offset + limit : null,
-    hasMore: offset + limit < filteredRows.length,
-  });
+  return NextResponse.json({ rows, total: filteredRows.length });
 }

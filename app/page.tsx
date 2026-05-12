@@ -97,7 +97,6 @@ export default function HomePage() {
               alt="Logo"
               className="h-10 w-auto"
             />
-            <span className="font-extrabold text-xl text-slate-900 tracking-tight hidden sm:inline">RetailReq</span>
           </div>
           <nav className="flex items-center gap-6 text-sm font-semibold text-slate-600">
             <Link href="#how-it-works" className="hidden md:inline hover:text-red-600 transition">How It Works</Link>
@@ -226,7 +225,6 @@ export default function HomePage() {
               alt="Logo"
               className="h-8 w-auto opacity-60"
             />
-            <span className="text-sm font-semibold text-slate-300">RetailReq</span>
           </div>
           <p className="text-xs text-slate-500">© 2025 Retail Requisition System. All rights reserved.</p>
           <div className="flex gap-6 text-sm">

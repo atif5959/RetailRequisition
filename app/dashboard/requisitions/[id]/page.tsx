@@ -2,9 +2,11 @@ import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import DashboardNav from '@/components/DashboardNav';
 import StatusButtons from '@/components/StatusButtons';
+import QuantityEditor from '@/components/QuantityEditor';
 import { getCurrentProfile } from '@/lib/auth';
-import { getInHandStockKey, retailHeaderFields, retailItems } from '@/lib/retailRequisitionFields';
+import { retailHeaderFields } from '@/lib/retailRequisitionFields';
 import { supabaseAdmin } from '@/lib/supabaseClient';
+import { getRetailItems } from '@/lib/getRetailItems';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,6 +28,8 @@ export default async function RequisitionDetail({ params }: { params: Promise<{ 
 
   const { data: values } = await supabase.from('form_submission_values').select('*').eq('submission_id', id);
   const valueMap = Object.fromEntries((values || []).map((v: any) => [v.field_key, v.value || '']));
+
+  const items = await getRetailItems();
 
   const status = submission.status as string;
   const badge = statusConfig[status] ?? { label: status, classes: 'bg-slate-100 text-slate-600' };
@@ -76,39 +80,12 @@ export default async function RequisitionDetail({ params }: { params: Promise<{ 
             </div>
           </div>
 
-          {/* Items Table */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-              <h2 className="font-bold text-slate-900">Submitted Items</h2>
-              <span className="text-lg font-extrabold text-red-600">
-                Grand Total: {valueMap.GrandTotal || '0.00'}
-              </span>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[860px] text-sm">
-                <thead className="bg-slate-900 text-left">
-                  <tr>
-                    <th className="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-300">Item</th>
-                    <th className="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-300 text-right">In Hand Stock</th>
-                    <th className="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-300 text-right">Quantity</th>
-                    <th className="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-300 text-right">Price</th>
-                    <th className="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-300 text-right">Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {retailItems.map((item, i) => (
-                    <tr key={item.key} className={`border-t border-slate-100 ${i % 2 === 1 ? 'bg-slate-50/60' : ''}`}>
-                      <td className="px-5 py-3 font-semibold text-slate-800">{item.label}</td>
-                      <td className="px-5 py-3 text-right text-slate-600">{valueMap[getInHandStockKey(item.key)] || '0'}</td>
-                      <td className="px-5 py-3 text-right text-slate-600">{valueMap[item.key] || '0'}</td>
-                      <td className="px-5 py-3 text-right text-slate-600">{valueMap[item.priceKey] || '0.00'}</td>
-                      <td className="px-5 py-3 text-right font-bold text-slate-900">{valueMap[item.totalKey] || '0.00'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <QuantityEditor
+            submissionId={id}
+            isPending={status === 'pending'}
+            valueMap={valueMap}
+            items={items}
+          />
 
         </main>
       </div>

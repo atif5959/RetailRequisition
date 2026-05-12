@@ -27,7 +27,7 @@ export default async function UsersPage() {
             <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-0.5">Dashboard</p>
             <h1 className="text-2xl font-extrabold text-slate-900">Users</h1>
           </div>
-          <div className="flex items-center gap-2 text-xs text-slate-400 font-medium">
+          <div className="hidden sm:flex items-center gap-2 text-xs text-slate-400 font-medium">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
