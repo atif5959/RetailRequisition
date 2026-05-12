@@ -1,8 +1,21 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import RetailRequisitionForm from '@/components/RetailRequisitionForm';
 import { getRetailItems } from '@/lib/getRetailItems';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300; // re-fetch items every 5 minutes
+
+export const metadata: Metadata = {
+  title: 'Submit a Retail Requisition',
+  description:
+    'Fill in your route code, employee details, and stock quantities to submit a retail requisition request for approval.',
+  alternates: { canonical: '/form/retail-requisition' },
+  openGraph: {
+    title: 'Submit a Retail Requisition',
+    description: 'Fill in your details and stock quantities to submit a retail requisition.',
+    url: '/form/retail-requisition',
+  },
+};
 
 export default async function RetailFormPage() {
   const items = await getRetailItems();

@@ -1,5 +1,20 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { AppButtonLink } from '@/components/AppButton';
+
+export const metadata: Metadata = {
+  title: 'TCS Retail Requisition — Submit & Track Stock Requests',
+  description:
+    'Submit retail stock requisitions online, track approval status in real time, and manage fulfilment across all regions. Fast, paperless, and secure.',
+  alternates: { canonical: '/' },
+  openGraph: {
+    title: 'TCS Retail Requisition — Submit & Track Stock Requests',
+    description:
+      'Submit retail stock requisitions online, track approval status in real time, and manage fulfilment across all regions.',
+    url: '/',
+  },
+};
 
 const stats = [
   { value: 'Instant', label: 'Form Submission' },
@@ -92,10 +107,13 @@ export default function HomePage() {
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-100 shadow-sm">
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img
+            <Image
               src="https://www.cognitoforms.com/file/YlX_ys5JvAugKr0_J7gDB_8tKeqbjCkjA41iDR7EEgPx2m2Fpmmbl9fVpkvn8r2t"
-              alt="Logo"
+              alt="TCS Logo"
+              width={160}
+              height={40}
               className="h-10 w-auto"
+              priority
             />
           </div>
           <nav className="flex items-center gap-6 text-sm font-semibold text-slate-600">
@@ -201,28 +219,32 @@ export default function HomePage() {
       </section>
 
       {/* ── CTA BANNER ── */}
-      <section className="bg-[linear-gradient(135deg,#b91c1c_0%,#dc2626_45%,#ef4444_100%)] py-14 sm:py-20 px-4 sm:px-6 text-center">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-4">
-          Ready to submit your requisition?
-        </h2>
-        <p className="text-red-100 text-lg mb-8 max-w-xl mx-auto text-center">
-          Get your stock request in front of the right people instantly — no paperwork, no delays.
-        </p>
-        <Link
-          href="/form/retail-requisition"
-          className="inline-block bg-white text-red-600 font-extrabold text-base px-10 py-4 rounded-full shadow-lg hover:bg-red-50 hover:shadow-xl transition"
-        >
-          Open Form →
-        </Link>
+      <section className="bg-[linear-gradient(135deg,#b91c1c_0%,#dc2626_45%,#ef4444_100%)] py-14 sm:py-20 px-4 sm:px-6">
+        <div className="flex flex-col items-center text-center gap-4 max-w-2xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white">
+            Ready to submit your requisition?
+          </h2>
+          <p className="text-red-100 text-lg max-w-xl">
+            Get your stock request in front of the right people instantly — no paperwork, no delays.
+          </p>
+          <Link
+            href="/form/retail-requisition"
+            className="mt-4 inline-block bg-white text-red-600 font-extrabold text-base px-10 py-4 rounded-full shadow-lg hover:bg-red-50 hover:shadow-xl transition"
+          >
+            Open Form →
+          </Link>
+        </div>
       </section>
 
       {/* ── FOOTER ── */}
       <footer className="bg-slate-900 text-slate-400 py-10 px-4 sm:px-6">
         <div className="mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
           <div className="flex items-center gap-3">
-            <img
+            <Image
               src="https://www.cognitoforms.com/file/YlX_ys5JvAugKr0_J7gDB_8tKeqbjCkjA41iDR7EEgPx2m2Fpmmbl9fVpkvn8r2t"
-              alt="Logo"
+              alt="TCS Logo"
+              width={128}
+              height={32}
               className="h-8 w-auto opacity-60"
             />
           </div>
