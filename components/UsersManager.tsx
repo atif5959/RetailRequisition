@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { AppButton } from '@/components/AppButton';
 import ApiLoader from '@/components/ApiLoader';
 import { pakistanRegions } from '@/lib/regions';
+import AppSelect from '@/components/AppSelect';
 
 type DashboardUser = {
   id: string;
@@ -14,16 +15,27 @@ type DashboardUser = {
   created_at: string | null;
 };
 
-const roles = ['admin', 'head'] as const;
+const createRoleOptions = [
+  { value: 'admin',       label: 'Admin' },
+  { value: 'head',        label: 'Head' },
+];
+const editRoleOptions = [
+  { value: 'admin',       label: 'Admin' },
+  { value: 'head',        label: 'Head' },
+];
+const regionOptions = [
+  ...pakistanRegions.map((r) => ({ value: r, label: r })),
+];
 
 const inputClass = 'w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-red-400 focus:bg-white focus:ring-4 focus:ring-red-100 focus:outline-none transition';
-const selectClass = 'app-select';
 
 export default function UsersManager({ users }: { users: DashboardUser[] }) {
   const router = useRouter();
   const [creating, setCreating]         = useState(false);
   const [savingUserId, setSavingUserId] = useState<string | null>(null);
   const [message, setMessage]           = useState<{ text: string; ok: boolean } | null>(null);
+  const [showCreatePw, setShowCreatePw] = useState(false);
+  const [showPwIds, setShowPwIds]       = useState<Set<string>>(new Set());
   const [form, setForm] = useState({ email: '', password: '', role: 'admin' as DashboardUser['role'], region: '' });
   const [edits, setEdits] = useState<Record<string, Pick<DashboardUser, 'email' | 'role' | 'region'> & { password: string }>>(
     Object.fromEntries(users.map((u) => [u.id, { email: u.email, role: u.role, region: u.region || '', password: '' }]))
@@ -59,6 +71,14 @@ export default function UsersManager({ users }: { users: DashboardUser[] }) {
     }
   }
 
+  function toggleShowPw(id: string) {
+    setShowPwIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }
+
   return (
     <div className="space-y-6">
 
@@ -85,22 +105,52 @@ export default function UsersManager({ users }: { users: DashboardUser[] }) {
             </div>
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Password</label>
-              <input type="password" placeholder="Min. 6 characters" value={form.password}
-                onChange={(e) => setForm((c) => ({ ...c, password: e.target.value }))}
-                minLength={6} required className={inputClass} />
+              <div className="relative">
+                <input
+                  type={showCreatePw ? 'text' : 'password'}
+                  placeholder="Min. 6 characters"
+                  value={form.password}
+                  onChange={(e) => setForm((c) => ({ ...c, password: e.target.value }))}
+                  minLength={6}
+                  required
+                  className={inputClass + ' pr-11'}
+                />
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  onClick={() => setShowCreatePw((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition"
+                >
+                  {showCreatePw ? (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Role</label>
-              <select value={form.role} onChange={(e) => setForm((c) => ({ ...c, role: e.target.value as DashboardUser['role'] }))} className={selectClass}>
-                {roles.map((r) => <option key={r} value={r}>{r}</option>)}
-              </select>
+              <AppSelect
+                value={form.role}
+                onChange={(v) => setForm((c) => ({ ...c, role: v as DashboardUser['role'] }))}
+                options={createRoleOptions}
+                placeholder="Select role"
+              />
             </div>
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Region</label>
-              <select value={form.region} onChange={(e) => setForm((c) => ({ ...c, region: e.target.value }))} required className={selectClass}>
-                <option value="">Select region</option>
-                {pakistanRegions.map((r) => <option key={r} value={r}>{r}</option>)}
-              </select>
+              <AppSelect
+                value={form.region}
+                onChange={(v) => setForm((c) => ({ ...c, region: v }))}
+                options={regionOptions}
+                placeholder="Select region"
+              />
             </div>
           </div>
           <div className="mt-5">
@@ -135,6 +185,7 @@ export default function UsersManager({ users }: { users: DashboardUser[] }) {
             <tbody>
               {users.map((user, i) => {
                 const edit = edits[user.id] ?? { email: user.email, role: user.role, region: user.region || '', password: '' };
+                const showPw = showPwIds.has(user.id);
                 return (
                   <tr key={user.id} className={`border-t border-slate-100 ${i % 2 === 1 ? 'bg-slate-50/50' : ''}`}>
                     <td className="px-5 py-3">
@@ -142,25 +193,49 @@ export default function UsersManager({ users }: { users: DashboardUser[] }) {
                         onChange={(e) => setEdits((c) => ({ ...c, [user.id]: { ...edit, email: e.target.value } }))}
                         className={inputClass} />
                     </td>
-                    <td className="px-5 py-3">
-                      <select value={edit.role}
-                        onChange={(e) => setEdits((c) => ({ ...c, [user.id]: { ...edit, role: e.target.value as DashboardUser['role'] } }))}
-                        className={selectClass}>
-                        {roles.map((r) => <option key={r} value={r}>{r}</option>)}
-                      </select>
+                    <td className="px-5 py-3 min-w-[160px]">
+                      <AppSelect
+                        value={edit.role}
+                        onChange={(v) => setEdits((c) => ({ ...c, [user.id]: { ...edit, role: v as DashboardUser['role'] } }))}
+                        options={editRoleOptions}
+                        placeholder="Select role"
+                      />
+                    </td>
+                    <td className="px-5 py-3 min-w-[180px]">
+                      <AppSelect
+                        value={edit.region || ''}
+                        onChange={(v) => setEdits((c) => ({ ...c, [user.id]: { ...edit, region: v } }))}
+                        options={regionOptions}
+                        placeholder="Select region"
+                      />
                     </td>
                     <td className="px-5 py-3">
-                      <select value={edit.region || ''}
-                        onChange={(e) => setEdits((c) => ({ ...c, [user.id]: { ...edit, region: e.target.value } }))}
-                        className={selectClass}>
-                        <option value="">Select region</option>
-                        {pakistanRegions.map((r) => <option key={r} value={r}>{r}</option>)}
-                      </select>
-                    </td>
-                    <td className="px-5 py-3">
-                      <input type="password" placeholder="Leave blank to keep" value={edit.password}
-                        onChange={(e) => setEdits((c) => ({ ...c, [user.id]: { ...edit, password: e.target.value } }))}
-                        className={inputClass} />
+                      <div className="relative">
+                        <input
+                          type={showPw ? 'text' : 'password'}
+                          placeholder="Leave blank to keep"
+                          value={edit.password}
+                          onChange={(e) => setEdits((c) => ({ ...c, [user.id]: { ...edit, password: e.target.value } }))}
+                          className={inputClass + ' pr-11'}
+                        />
+                        <button
+                          type="button"
+                          tabIndex={-1}
+                          onClick={() => toggleShowPw(user.id)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition"
+                        >
+                          {showPw ? (
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                            </svg>
+                          ) : (
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                          )}
+                        </button>
+                      </div>
                     </td>
                     <td className="px-5 py-3 text-xs text-slate-500">
                       {user.created_at ? new Date(user.created_at).toLocaleString() : '—'}

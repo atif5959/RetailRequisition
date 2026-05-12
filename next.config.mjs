@@ -1,7 +1,13 @@
 /** @type {import('next').NextConfig} */
+const isProduction = process.env.NODE_ENV === 'production';
+
 const nextConfig = {
   poweredByHeader: false,
   compress: true,
+
+  turbopack: {
+    root: process.cwd(),
+  },
 
   images: {
     remotePatterns: [
@@ -19,7 +25,7 @@ const nextConfig = {
   },
 
   async headers() {
-    return [
+    const headers = [
       {
         source: '/(.*)',
         headers: [
@@ -34,21 +40,26 @@ const nextConfig = {
           },
         ],
       },
-      {
-        /* Long-lived cache for Next.js static chunks */
-        source: '/_next/static/(.*)',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-        ],
-      },
-      {
-        /* Cache public assets for 7 days */
-        source: '/(.*)\\.(ico|png|jpg|jpeg|svg|webp|avif|woff2|woff)',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=86400' },
-        ],
-      },
     ];
+
+    if (isProduction) {
+      headers.push(
+        {
+          source: '/_next/static/(.*)',
+          headers: [
+            { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+          ],
+        },
+        {
+          source: '/(.*)\\.(ico|png|jpg|jpeg|svg|webp|avif|woff2|woff)',
+          headers: [
+            { key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=86400' },
+          ],
+        }
+      );
+    }
+
+    return headers;
   },
 };
 

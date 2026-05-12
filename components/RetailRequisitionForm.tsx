@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import ApiLoader from '@/components/ApiLoader';
+import AppSelect from '@/components/AppSelect';
 import { getInHandStockKey, retailHeaderFields } from '@/lib/retailRequisitionFields';
 import type { RetailItem } from '@/lib/retailRequisitionFields';
 import { pakistanRegions } from '@/lib/regions';
@@ -132,16 +133,12 @@ export default function RetailRequisitionForm({ items }: { items: RetailItem[] }
             <label key={field.key} className="space-y-1.5">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-400">{field.label}</span>
               {field.key === 'Region' ? (
-                <select
-                  name={field.key}
+                <AppSelect
                   value={headerValues[field.key]}
-                  onChange={(e) => setHeaderValues((c) => ({ ...c, [field.key]: e.target.value }))}
-                  required
-                  className="app-select"
-                >
-                  <option value="">Select region</option>
-                  {pakistanRegions.map((r) => <option key={r} value={r}>{r}</option>)}
-                </select>
+                  onChange={(v) => setHeaderValues((c) => ({ ...c, [field.key]: v }))}
+                  options={pakistanRegions.map((r) => ({ value: r, label: r }))}
+                  placeholder="Select region"
+                />
               ) : field.key === 'RouteCode' ? (
                 <input
                   name={field.key}
