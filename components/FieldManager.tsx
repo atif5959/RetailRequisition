@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import ApiLoader from '@/components/ApiLoader';
+import FieldError from '@/components/FieldError';
 import type { RetailItemRow } from '@/lib/getRetailItems';
 
 const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -29,7 +30,7 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
   const [modalOpen, setModalOpen]   = useState(false);
   const [addForm, setAddForm]       = useState({ label: '', price: '' });
   const [adding, setAdding]         = useState(false);
-  const [addError, setAddError]     = useState('');
+  const [addErrors, setAddErrors]   = useState<{ label?: string; price?: string }>({});
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -47,10 +48,10 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
 
   function openModal() {
     setAddForm({ label: '', price: '' });
-    setAddError('');
+    setAddErrors({});
     setModalOpen(true);
   }
-  function closeModal() { setModalOpen(false); }
+  function closeModal() { setAddErrors({}); setModalOpen(false); }
 
   function startEdit(item: RetailItemRow) {
     setEditingId(item.id);
@@ -94,9 +95,17 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
 
   async function addItem(e: React.FormEvent) {
     e.preventDefault();
-    setAddError('');
+    const errs: { label?: string; price?: string } = {};
+    if (addForm.label.trim() === '') errs.label = 'Item name is required';
+    if (addForm.price === '') {
+      errs.price = 'Price is required';
+    } else {
+      const price = parseFloat(addForm.price);
+      if (isNaN(price) || price < 0) errs.price = 'Enter a valid price (0 or above)';
+    }
+    if (Object.keys(errs).length) { setAddErrors(errs); return; }
+    setAddErrors({});
     const price = parseFloat(addForm.price);
-    if (isNaN(price) || price < 0) { setAddError('Enter a valid price'); return; }
     setAdding(true);
     try {
       const res = await fetch('/api/admin/retail-items', {
@@ -105,7 +114,7 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
         body: JSON.stringify({ label: addForm.label.trim(), price }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) { setAddError(data.error || 'Failed to add item'); return; }
+      if (!res.ok) { setAddErrors({ label: data.error || 'Failed to add item' }); return; }
       setItems((prev) => [...prev, data.item]);
       closeModal();
     } finally {
@@ -137,7 +146,7 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
         </div>
 
         {/* Form */}
-        <form onSubmit={addItem} className="px-8 py-7 space-y-5">
+        <form onSubmit={addItem} noValidate className="px-8 py-7 space-y-5">
           <div className="space-y-1.5">
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
               Item Name
@@ -145,11 +154,11 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
             <input
               placeholder="e.g. Bubble Wrap Roll"
               value={addForm.label}
-              onChange={(e) => setAddForm((f) => ({ ...f, label: e.target.value }))}
-              required
+              onChange={(e) => { setAddErrors((ev) => ({ ...ev, label: undefined })); setAddForm((f) => ({ ...f, label: e.target.value })); }}
               autoFocus
-              className={modalInput}
+              className={`${modalInput} ${addErrors.label ? 'input-error' : ''}`}
             />
+            <FieldError msg={addErrors.label} />
           </div>
 
           <div className="space-y-1.5">
@@ -162,20 +171,11 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
               step="0.01"
               placeholder="0.00"
               value={addForm.price}
-              onChange={(e) => setAddForm((f) => ({ ...f, price: e.target.value }))}
-              required
-              className={modalInput}
+              onChange={(e) => { setAddErrors((ev) => ({ ...ev, price: undefined })); setAddForm((f) => ({ ...f, price: e.target.value })); }}
+              className={`${modalInput} ${addErrors.price ? 'input-error' : ''}`}
             />
+            <FieldError msg={addErrors.price} />
           </div>
-
-          {addError && (
-            <div className="flex items-start gap-2.5 bg-red-50 border border-red-200 text-red-700 text-sm font-medium rounded-xl px-4 py-3">
-              <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-              </svg>
-              <span>{addError}</span>
-            </div>
-          )}
 
           <div className="flex gap-3 pt-1">
             <button

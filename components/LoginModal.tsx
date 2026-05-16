@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabaseBrowser } from '@/lib/supabaseClient';
 import ApiLoader from '@/components/ApiLoader';
+import FieldError from '@/components/FieldError';
 
 export default function LoginModal() {
   const router = useRouter();
@@ -13,6 +14,7 @@ export default function LoginModal() {
   const [error, setError]               = useState('');
   const [loading, setLoading]           = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors]             = useState<{ identifier?: string; password?: string }>({});
 
   const isEmpCode = /^\d+$/.test(identifier.trim());
 
@@ -35,6 +37,16 @@ export default function LoginModal() {
 
   async function doLogin(e?: React.FormEvent | React.KeyboardEvent) {
     e?.preventDefault();
+
+    setErrors({});
+    const nextErrors: { identifier?: string; password?: string } = {};
+    if (!identifier.trim()) nextErrors.identifier = 'This field is required';
+    if (!password) nextErrors.password = 'Password is required';
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      return;
+    }
+
     if (loading) return;
     setLoading(true);
     setError('');
@@ -83,7 +95,7 @@ export default function LoginModal() {
         </div>
 
         {/* Form */}
-        <form onSubmit={(e) => doLogin(e)} className="px-8 py-8 space-y-5">
+        <form onSubmit={(e) => doLogin(e)} noValidate className="px-8 py-8 space-y-5">
 
           <div className="space-y-1.5">
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -92,13 +104,16 @@ export default function LoginModal() {
             <input
               type="text"
               value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
+              onChange={(e) => {
+                setIdentifier(e.target.value);
+                setErrors(prev => ({ ...prev, identifier: undefined }));
+              }}
               onKeyDown={(e) => { if (e.key === 'Enter') doLogin(e); }}
               placeholder="Email address or Emp Code"
-              required
               autoFocus
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-red-400 focus:bg-white focus:ring-4 focus:ring-red-100 focus:outline-none transition"
+              className={`w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-red-400 focus:bg-white focus:ring-4 focus:ring-red-100 focus:outline-none transition ${errors.identifier ? 'input-error' : ''}`}
             />
+            <FieldError msg={errors.identifier} />
             <p className="text-xs text-slate-400">
               {isEmpCode
                 ? `Signing in as employee — code: ${identifier.trim()}`
@@ -114,11 +129,13 @@ export default function LoginModal() {
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setErrors(prev => ({ ...prev, password: undefined }));
+                }}
                 onKeyDown={(e) => { if (e.key === 'Enter') doLogin(e); }}
                 placeholder="••••••••"
-                required
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 pr-11 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-red-400 focus:bg-white focus:ring-4 focus:ring-red-100 focus:outline-none transition"
+                className={`w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 pr-11 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-red-400 focus:bg-white focus:ring-4 focus:ring-red-100 focus:outline-none transition ${errors.password ? 'input-error' : ''}`}
               />
               <button
                 type="button"
@@ -138,6 +155,7 @@ export default function LoginModal() {
                 )}
               </button>
             </div>
+            <FieldError msg={errors.password} />
           </div>
 
           {error && (

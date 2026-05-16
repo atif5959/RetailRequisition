@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* Override browser-extension margin resets (e.g. Grammarly injects p { margin: 0 } outside CSS layers) */
+p.mx-auto {
+  margin-inline: auto !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
 .app-button-default {
   background-color: #3b82f6 !important;
   border-color: transparent !important;
@@ -417,6 +424,30 @@ textarea {
   border: 1px solid rgba(22, 163, 74, 0.24);
   border-radius: 6px;
   box-shadow: 0 8px 22px rgba(15, 23, 42, 0.12);
+}
+
+/* ── Field validation errors ── */
+@keyframes fieldErrIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.field-error {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #dc2626;
+  animation: fieldErrIn 0.2s ease both;
+  letter-spacing: 0.01em;
+}
+
+.input-error {
+  border-color: #f87171 !important;
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.18) !important;
+  background-color: #fff7f7 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

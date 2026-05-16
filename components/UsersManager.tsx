@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { AppButton } from '@/components/AppButton';
 import ApiLoader from '@/components/ApiLoader';
+import FieldError from '@/components/FieldError';
 import { pakistanRegions } from '@/lib/regions';
 import AppSelect from '@/components/AppSelect';
 
@@ -58,6 +59,7 @@ export default function UsersManager({
   const [creating, setCreating]         = useState(false);
   const [createMsg, setCreateMsg]       = useState<{ text: string; ok: boolean } | null>(null);
   const [showCreatePw, setShowCreatePw] = useState(false);
+  const [createErrors, setCreateErrors] = useState<{ identifier?: string; password?: string; region?: string }>({});
   const [form, setForm] = useState({
     email:   '',
     empCode: '',
@@ -109,9 +111,22 @@ export default function UsersManager({
 
   /* ── handlers ── */
   const blankForm = { email: '', empCode: '', password: '', role: 'admin' as DashboardUser['role'], region: isHead ? (currentProfile.region ?? '') : '' };
+  function openCreateModal() { setCreateMsg(null); setCreateErrors({}); setForm(blankForm); setShowModal(true); }
 
   async function createUser(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
+    const errs: typeof createErrors = {};
+    if (isEmployeeRole) {
+      if (!form.empCode.trim()) errs.identifier = 'Emp Code is required';
+    } else {
+      if (!form.email.trim()) errs.identifier = 'Email is required';
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) errs.identifier = 'Enter a valid email address';
+    }
+    if (!form.password) errs.password = 'Password is required';
+    else if (form.password.length < 6) errs.password = 'Password must be at least 6 characters';
+    if (!isHead && !form.region) errs.region = 'Region is required';
+    if (Object.keys(errs).length) { setCreateErrors(errs); return; }
+    setCreateErrors({});
     setCreating(true);
     setCreateMsg(null);
     const payload = isEmployeeRole
@@ -197,7 +212,7 @@ export default function UsersManager({
         </div>
 
         {/* Form */}
-        <form onSubmit={createUser} className="p-6 space-y-4">
+        <form onSubmit={createUser} noValidate className="p-6 space-y-4">
           {/* Email or EmpCode — switches based on role */}
           <div className="space-y-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
@@ -213,21 +228,24 @@ export default function UsersManager({
                 onChange={(e) => {
                   const val = e.target.value.replace(/\D/g, '');
                   setForm((c) => ({ ...c, empCode: val }));
+                  setCreateErrors((ce) => ({ ...ce, identifier: undefined }));
                 }}
-                required
-                className={inputClass}
+                className={`${inputClass} ${createErrors.identifier ? 'input-error' : ''}`}
               />
             ) : (
               <input
                 key="email"
-                type="email"
+                type="text"
                 placeholder="user@example.com"
                 value={form.email}
-                onChange={(e) => setForm((c) => ({ ...c, email: e.target.value }))}
-                required
-                className={inputClass}
+                onChange={(e) => {
+                  setForm((c) => ({ ...c, email: e.target.value }));
+                  setCreateErrors((ce) => ({ ...ce, identifier: undefined }));
+                }}
+                className={`${inputClass} ${createErrors.identifier ? 'input-error' : ''}`}
               />
             )}
+            <FieldError msg={createErrors.identifier} />
           </div>
 
           <div className="space-y-1.5">
@@ -237,10 +255,11 @@ export default function UsersManager({
                 type={showCreatePw ? 'text' : 'password'}
                 placeholder="Min. 6 characters"
                 value={form.password}
-                onChange={(e) => setForm((c) => ({ ...c, password: e.target.value }))}
-                minLength={6}
-                required
-                className={inputClass + ' pr-11'}
+                onChange={(e) => {
+                  setForm((c) => ({ ...c, password: e.target.value }));
+                  setCreateErrors((ce) => ({ ...ce, password: undefined }));
+                }}
+                className={`${inputClass} pr-11 ${createErrors.password ? 'input-error' : ''}`}
               />
               <button
                 type="button"
@@ -260,6 +279,7 @@ export default function UsersManager({
                 )}
               </button>
             </div>
+            <FieldError msg={createErrors.password} />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -289,11 +309,15 @@ export default function UsersManager({
               ) : (
                 <AppSelect
                   value={form.region}
-                  onChange={(v) => setForm((c) => ({ ...c, region: v }))}
+                  onChange={(v) => {
+                    setForm((c) => ({ ...c, region: v }));
+                    setCreateErrors((ce) => ({ ...ce, region: undefined }));
+                  }}
                   options={regionOptions}
                   placeholder="Select region"
                 />
               )}
+              <FieldError msg={createErrors.region} />
             </div>
           </div>
 
@@ -343,7 +367,7 @@ export default function UsersManager({
         {/* Create button */}
         <button
           type="button"
-          onClick={() => { setCreateMsg(null); setShowModal(true); }}
+          onClick={openCreateModal}
           className="inline-flex items-center justify-center gap-2 bg-red-600 text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-red-700 transition shadow-sm flex-shrink-0"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

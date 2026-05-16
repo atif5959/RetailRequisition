@@ -79,7 +79,7 @@ export default async function RetailFormPage() {
           <div className="mx-auto max-w-7xl">
             <RetailRequisitionForm
               items={items}
-              currentUser={{ id: profile.id, email: profile.email, role: profile.role }}
+              currentUser={{ id: profile.id, email: profile.email, role: profile.role, region: profile.region ?? null }}
             />
           </div>
         </main>
