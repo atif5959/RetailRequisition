@@ -260,7 +260,7 @@ function CalGrid({ year, month, start, end, hover, onDay, onHover, onPrev, onNex
     const inRange = rs && re && d > rs && d < re;
     if (isEdge)   return 'bg-red-600 text-white font-bold rounded-full cursor-pointer hover:bg-red-700';
     if (inRange)  return 'bg-red-50 text-red-700 cursor-pointer text-sm';
-    return 'text-slate-700 hover:bg-red-50 hover:text-red-600 rounded-full cursor-pointer transition';
+    return 'text-slate-700 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 rounded-full cursor-pointer transition';
   }
 
   return (
@@ -272,7 +272,7 @@ function CalGrid({ year, month, start, end, hover, onDay, onHover, onPrev, onNex
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <span className="text-sm font-bold text-slate-800">{MONTHS[month]} {year}</span>
+        <span className="text-sm font-bold text-slate-800 dark:text-slate-100">{MONTHS[month]} {year}</span>
         <button type="button" onClick={onNext}
           className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 transition text-slate-400 hover:text-slate-700">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -608,7 +608,7 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
     <div className="space-y-5">
 
       {/* Filters */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-4">
         <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
 
           {/* Search */}
@@ -620,13 +620,13 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by location, origin or route code…"
-              className="w-full h-11 rounded-xl border border-slate-200 bg-white pl-10 pr-9 text-sm font-medium transition focus:border-red-400 focus:ring-4 focus:ring-red-100 focus:outline-none"
+              className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 pl-10 pr-9 text-sm font-medium transition focus:border-red-400 focus:ring-4 focus:ring-red-100 focus:outline-none"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => setSearch('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded-full bg-slate-200 hover:bg-red-100 hover:text-red-600 text-slate-500 transition"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-600 hover:bg-red-100 dark:hover:bg-red-900/40 hover:text-red-600 dark:hover:text-red-400 text-slate-500 dark:text-slate-400 transition"
               >
                 <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -653,7 +653,7 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
                 <button
                   type="button"
                   onClick={() => setFilterOpen(o => !o)}
-                  className="w-full h-11 flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition hover:border-red-300 focus:border-red-400 focus:ring-4 focus:ring-red-100 focus:outline-none"
+                  className="w-full h-11 flex items-center justify-between gap-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 text-sm font-medium text-slate-700 dark:text-slate-200 transition hover:border-red-300 focus:border-red-400 focus:ring-4 focus:ring-red-100 focus:outline-none"
                 >
                   <span>{selected.label}</span>
                   <svg className={`w-4 h-4 text-slate-400 flex-shrink-0 transition-transform ${filterOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -661,7 +661,7 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
                   </svg>
                 </button>
                 {filterOpen && (
-                  <div className="absolute right-0 mt-1.5 w-44 bg-white rounded-xl border border-slate-200 shadow-lg z-20 py-1 overflow-hidden">
+                  <div className="absolute right-0 mt-1.5 w-44 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-600 shadow-lg z-20 py-1 overflow-hidden">
                     {options.map(opt => (
                       <button
                         key={opt.value}
@@ -669,8 +669,8 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
                         onClick={() => { setFilterOpen(false); handleFilterChange(opt.value); }}
                         className={`w-full text-left px-4 py-2.5 text-sm font-medium transition flex items-center gap-2 ${
                           timeFilter === opt.value
-                            ? 'bg-red-50 text-red-600 font-semibold'
-                            : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                            ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-semibold'
+                            : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white'
                         }`}
                       >
                         {timeFilter === opt.value && (
@@ -702,7 +702,7 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
                 <button
                   type="button"
                   onClick={() => setRegionOpen(o => !o)}
-                  className={`w-full h-11 flex items-center justify-between gap-2 rounded-xl border px-3 text-sm font-medium transition focus:outline-none focus:ring-4 focus:ring-red-100 ${active ? 'border-red-300 bg-red-50 text-red-700' : 'border-slate-200 bg-white text-slate-700 hover:border-red-300'}`}
+                  className={`w-full h-11 flex items-center justify-between gap-2 rounded-xl border px-3 text-sm font-medium transition focus:outline-none focus:ring-4 focus:ring-red-100 ${active ? 'border-red-300 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400' : 'border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:border-red-300'}`}
                 >
                   <span className="truncate">{btnLabel}</span>
                   <div className="flex items-center gap-1.5 flex-shrink-0">
@@ -718,7 +718,7 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
                 </button>
 
                 {regionOpen && (
-                  <div className="absolute right-0 mt-1.5 w-52 bg-white rounded-xl border border-slate-200 shadow-lg z-20 overflow-hidden">
+                  <div className="absolute right-0 mt-1.5 w-52 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-600 shadow-lg z-20 overflow-hidden">
                     <div className="py-1 max-h-72 overflow-y-auto">
                       {pakistanRegions.map((r) => {
                         const checked = regionFilter.includes(r);
@@ -727,7 +727,7 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
                             key={r}
                             type="button"
                             onClick={() => toggleRegion(r)}
-                            className={`w-full text-left px-3 py-2.5 text-sm font-medium transition flex items-center gap-3 ${checked ? 'bg-red-50 text-red-700' : 'text-slate-700 hover:bg-slate-50'}`}
+                            className={`w-full text-left px-3 py-2.5 text-sm font-medium transition flex items-center gap-3 ${checked ? 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
                           >
                             {/* Custom checkbox */}
                             <span className={`flex-shrink-0 w-4 h-4 rounded border-2 flex items-center justify-center transition ${checked ? 'bg-red-600 border-red-600' : 'border-slate-300 bg-white'}`}>
@@ -743,11 +743,11 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
                       })}
                     </div>
                     {active && (
-                      <div className="border-t border-slate-100 px-3 py-2">
+                      <div className="border-t border-slate-100 dark:border-slate-700 px-3 py-2">
                         <button
                           type="button"
                           onClick={() => setRegionFilter([])}
-                          className="w-full text-xs font-semibold text-slate-500 hover:text-red-600 transition text-center py-1"
+                          className="w-full text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition text-center py-1"
                         >
                           Clear selection
                         </button>
@@ -764,7 +764,7 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
             type="button"
             onClick={handlePrint}
             disabled={printLoading}
-            className="h-11 flex items-center gap-2 rounded-xl border border-blue-200 bg-white px-4 text-sm font-semibold text-blue-600 hover:border-blue-400 hover:bg-blue-50 transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+            className="h-11 flex items-center gap-2 rounded-xl border border-blue-200 dark:border-blue-800 bg-white dark:bg-slate-700 px-4 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
           >
             {printLoading ? (
               <ApiLoader label="Loading" />
@@ -783,7 +783,7 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
             type="button"
             onClick={handleCsv}
             disabled={csvLoading}
-            className="h-11 flex items-center gap-2 rounded-xl border border-green-200 bg-white px-4 text-sm font-semibold text-green-700 hover:border-green-400 hover:bg-green-50 transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+            className="h-11 flex items-center gap-2 rounded-xl border border-green-200 dark:border-green-800 bg-white dark:bg-slate-700 px-4 text-sm font-semibold text-green-700 dark:text-green-400 hover:border-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
           >
             {csvLoading ? (
               <ApiLoader label="Loading" />
@@ -802,7 +802,7 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
             type="button"
             onClick={handleDeduction}
             disabled={deductionLoading}
-            className="h-11 flex items-center gap-2 rounded-xl border border-red-300 bg-white px-4 text-sm font-semibold text-red-600 hover:border-red-500 hover:bg-red-50 transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+            className="h-11 flex items-center gap-2 rounded-xl border border-red-300 dark:border-red-800 bg-white dark:bg-slate-700 px-4 text-sm font-semibold text-red-600 dark:text-red-400 hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
           >
             {deductionLoading ? (
               <ApiLoader label="Loading" />
@@ -830,8 +830,8 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
 
       {/* Delete toolbar — shown when rows are selected */}
       {canDelete && selectedIds.size > 0 && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl px-5 py-3 flex items-center gap-4">
-          <span className="text-sm font-semibold text-slate-700">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl px-5 py-3 flex items-center gap-4">
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
             {selectedIds.size} record{selectedIds.size !== 1 ? 's' : ''} selected
           </span>
           {hasApprovedSelected && (
@@ -853,7 +853,7 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
       )}
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[820px] text-sm">
             <thead className="bg-slate-900">
@@ -878,7 +878,7 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
             </thead>
             <tbody>
               {!loading && rows.map((row, i) => (
-                <tr key={row.id} className={`border-t border-slate-100 hover:bg-red-50/40 transition ${i % 2 === 1 ? 'bg-slate-50/50' : ''} ${selectedIds.has(row.id) ? 'bg-red-50/60' : ''}`}>
+                <tr key={row.id} className={`border-t border-slate-100 dark:border-slate-700 hover:bg-red-50/40 dark:hover:bg-red-900/10 transition ${i % 2 === 1 ? 'bg-slate-50/50 dark:bg-slate-700/20' : ''} ${selectedIds.has(row.id) ? 'bg-red-50/60 dark:bg-red-900/20' : ''}`}>
                   {canDelete && (
                     <td className="px-3 py-3">
                       <input
@@ -889,17 +889,17 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
                       />
                     </td>
                   )}
-                  <td className="px-3 py-3 font-semibold text-slate-800">{row.region || '—'}</td>
-                  <td className="px-3 py-3 text-slate-600">{row.routeCode || '—'}</td>
-                  <td className="px-3 py-3 text-slate-600">{row.empCode || '—'}</td>
-                  <td className="px-3 py-3 text-slate-600">{row.location || '—'}</td>
-                  <td className="px-3 py-3 text-slate-600">{row.origin || '—'}</td>
+                  <td className="px-3 py-3 font-semibold text-slate-800 dark:text-slate-100">{row.region || '—'}</td>
+                  <td className="px-3 py-3 text-slate-600 dark:text-slate-300">{row.routeCode || '—'}</td>
+                  <td className="px-3 py-3 text-slate-600 dark:text-slate-300">{row.empCode || '—'}</td>
+                  <td className="px-3 py-3 text-slate-600 dark:text-slate-300">{row.location || '—'}</td>
+                  <td className="px-3 py-3 text-slate-600 dark:text-slate-300">{row.origin || '—'}</td>
                   <td className="px-3 py-3">
                     <span className={`inline-block text-xs font-bold px-2.5 py-1 rounded-full capitalize ${statusBadge[row.status] ?? 'bg-slate-100 text-slate-600'}`}>
                       {row.status}
                     </span>
                   </td>
-                  <td className="px-3 py-3 text-slate-500 text-xs whitespace-nowrap">{fmtDateTime(row.created_at)}</td>
+                  <td className="px-3 py-3 text-slate-500 dark:text-slate-400 text-xs whitespace-nowrap">{fmtDateTime(row.created_at)}</td>
                   <td className="px-3 py-3">
                     <Link href={`/dashboard/requisitions/${row.id}`}
                       className="inline-flex items-center gap-1 text-xs font-bold text-red-600 hover:text-red-700 transition">
@@ -913,10 +913,10 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
               ))}
 
               {loading && Array.from({ length: PAGE_SIZE }).map((_, i) => (
-                <tr key={i} className={`border-t border-slate-100 ${i % 2 === 1 ? 'bg-slate-50/50' : ''}`}>
+                <tr key={i} className={`border-t border-slate-100 dark:border-slate-700 ${i % 2 === 1 ? 'bg-slate-50/50 dark:bg-slate-700/20' : ''}`}>
                   {Array.from({ length: colCount }).map((_, j) => (
                     <td key={j} className="px-3 py-3">
-                      <div className="h-4 bg-slate-100 rounded animate-pulse" style={{ width: j === colCount - 2 ? '2.5rem' : '80%' }} />
+                      <div className="h-4 bg-slate-100 dark:bg-slate-600 rounded animate-pulse" style={{ width: j === colCount - 2 ? '2.5rem' : '80%' }} />
                     </td>
                   ))}
                 </tr>
@@ -924,7 +924,7 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
 
               {!loading && rows.length === 0 && (
                 <tr>
-                  <td colSpan={colCount} className="px-3 py-12 text-center text-slate-400 text-sm font-medium">
+                  <td colSpan={colCount} className="px-3 py-12 text-center text-slate-400 dark:text-slate-500 text-sm font-medium">
                     No requisitions found.
                   </td>
                 </tr>
@@ -934,8 +934,8 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
         </div>
 
         {/* Pagination footer */}
-        <div className="border-t border-slate-200 px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50">
-          <span className="text-xs font-medium text-slate-500 order-2 sm:order-1">
+        <div className="border-t border-slate-200 dark:border-slate-700 px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50 dark:bg-slate-900/50">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 order-2 sm:order-1">
             {total === 0
               ? 'No results'
               : `Showing ${rangeStart}–${rangeEnd} of ${total} record${total !== 1 ? 's' : ''}`}
@@ -946,7 +946,7 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1 || loading}
-              className="h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1"
+              className="h-8 px-3 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1"
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -966,7 +966,7 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
                   className={`h-8 w-8 rounded-lg text-xs font-bold transition ${
                     p === page
                       ? 'bg-red-600 text-white shadow-sm'
-                      : 'border border-slate-200 bg-white text-slate-600 hover:bg-red-50 hover:text-red-600 hover:border-red-200'
+                      : 'border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 hover:border-red-200'
                   } disabled:cursor-not-allowed`}
                 >
                   {p}
@@ -978,7 +978,7 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
             <button
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages || loading}
-              className="h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1"
+              className="h-8 px-3 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1"
             >
               Next
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -999,7 +999,7 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => !deleteLoading && setShowDeleteConfirm(false)} />
-          <div className="relative bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden">
+          <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 w-full max-w-md overflow-hidden">
             <div className="bg-red-600 px-6 py-4 flex items-center gap-3">
               <svg className="w-5 h-5 text-white flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -1007,9 +1007,9 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
               <h3 className="text-sm font-bold uppercase tracking-wider text-white">Confirm Delete</h3>
             </div>
             <div className="px-6 py-5 space-y-3">
-              <p className="text-sm text-slate-700">
+              <p className="text-sm text-slate-700 dark:text-slate-300">
                 You are about to permanently delete{' '}
-                <span className="font-bold text-slate-900">{selectedIds.size} record{selectedIds.size !== 1 ? 's' : ''}</span>.
+                <span className="font-bold text-slate-900 dark:text-white">{selectedIds.size} record{selectedIds.size !== 1 ? 's' : ''}</span>.
                 This cannot be undone.
               </p>
               {hasApprovedSelected && (
@@ -1018,12 +1018,12 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
                 </p>
               )}
             </div>
-            <div className="border-t border-slate-200 px-6 py-4 flex items-center justify-end gap-3 bg-slate-50">
+            <div className="border-t border-slate-200 dark:border-slate-700 px-6 py-4 flex items-center justify-end gap-3 bg-slate-50 dark:bg-slate-900/50">
               <button
                 type="button"
                 onClick={() => setShowDeleteConfirm(false)}
                 disabled={deleteLoading}
-                className="h-10 px-5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 transition disabled:opacity-40"
+                className="h-10 px-5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600 transition disabled:opacity-40"
               >
                 Cancel
               </button>
@@ -1044,7 +1044,7 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
       {calOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={handleClose} />
-          <div className="relative bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-[680px] overflow-hidden">
+          <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 w-full max-w-[680px] overflow-hidden">
 
             <div className="bg-slate-900 px-6 py-4 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
@@ -1061,10 +1061,10 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
               </button>
             </div>
 
-            <div className="bg-slate-50 border-b border-slate-200 px-6 py-3 flex items-center gap-5 flex-wrap">
+            <div className="bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-700 px-6 py-3 flex items-center gap-5 flex-wrap">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Start date</span>
-                <span className={`text-sm font-semibold ${calStart ? 'text-red-600' : 'text-slate-300'}`}>
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Start date</span>
+                <span className={`text-sm font-semibold ${calStart ? 'text-red-600 dark:text-red-400' : 'text-slate-300 dark:text-slate-600'}`}>
                   {calStart ? fmtShort(calStart) : 'Not selected'}
                 </span>
               </div>
@@ -1072,8 +1072,8 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">End date</span>
-                <span className={`text-sm font-semibold ${calEnd ? 'text-red-600' : 'text-slate-300'}`}>
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">End date</span>
+                <span className={`text-sm font-semibold ${calEnd ? 'text-red-600 dark:text-red-400' : 'text-slate-300 dark:text-slate-600'}`}>
                   {calEnd ? fmtShort(calEnd) : 'Not selected'}
                 </span>
               </div>
@@ -1091,15 +1091,15 @@ export default function RequisitionsTable({ role, items: retailItems }: { role: 
                 onPrev={() => navRight(-1)} onNext={() => navRight(1)} />
             </div>
 
-            <div className="border-t border-slate-200 px-6 py-4 flex items-center justify-between bg-slate-50">
+            <div className="border-t border-slate-200 dark:border-slate-700 px-6 py-4 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
               <button type="button"
                 onClick={() => { setCalStart(null); setCalEnd(null); }}
-                className="text-sm font-semibold text-slate-500 hover:text-slate-700 transition">
+                className="text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition">
                 Clear
               </button>
               <div className="flex items-center gap-3">
                 <button type="button" onClick={handleClose}
-                  className="h-10 px-5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">
+                  className="h-10 px-5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600 transition">
                   Cancel
                 </button>
                 <button type="button" onClick={handleApply} disabled={!calStart}

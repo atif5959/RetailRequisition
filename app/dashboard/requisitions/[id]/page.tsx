@@ -37,19 +37,19 @@ export default async function RequisitionDetail({ params }: { params: Promise<{ 
   const badge = statusConfig[status] ?? { label: status, classes: 'bg-slate-100 text-slate-600' };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-slate-50">
+    <div className="flex flex-col md:flex-row min-h-screen bg-slate-50 dark:bg-slate-900">
       <DashboardNav role={profile.role} />
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* Top bar */}
-        <header className="bg-white border-b border-slate-200 px-4 sm:px-8 py-4 sm:py-5">
-          <div className="flex items-center gap-2 text-xs text-slate-400 font-semibold mb-1">
+        <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 sm:px-8 py-4 sm:py-5">
+          <div className="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-500 font-semibold mb-1">
             <Link href="/dashboard/requisitions" className="hover:text-red-600 transition">Requisitions</Link>
             <span>/</span>
-            <span className="text-slate-600">Detail</span>
+            <span className="text-slate-600 dark:text-slate-400">Detail</span>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900">Requisition Detail</h1>
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">Requisition Detail</h1>
             <span className={`text-xs font-bold px-3 py-1 rounded-full ${badge.classes}`}>{badge.label}</span>
           </div>
         </header>
@@ -57,10 +57,10 @@ export default async function RequisitionDetail({ params }: { params: Promise<{ 
         <main className="flex-1 p-4 sm:p-8 space-y-4 sm:space-y-6">
 
           {/* Meta + Actions */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Submitted</p>
-              <p className="text-sm font-semibold text-slate-800">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Submitted</p>
+              <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
                 {submission.created_at && new Date(submission.created_at).toLocaleString()}
               </p>
             </div>
@@ -68,15 +68,15 @@ export default async function RequisitionDetail({ params }: { params: Promise<{ 
           </div>
 
           {/* Requester Details */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-4 sm:px-6 py-4 border-b border-slate-100">
-              <h2 className="font-bold text-slate-900">Requester Details</h2>
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+            <div className="px-4 sm:px-6 py-4 border-b border-slate-100 dark:border-slate-700">
+              <h2 className="font-bold text-slate-900 dark:text-white">Requester Details</h2>
             </div>
             <div className="p-4 sm:p-6 grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3">
               {retailHeaderFields.map((field) => (
-                <div key={field.key} className="bg-slate-50 rounded-xl p-4">
-                  <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">{field.label}</p>
-                  <p className="font-semibold text-slate-900">{valueMap[field.key] || '—'}</p>
+                <div key={field.key} className="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-4">
+                  <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">{field.label}</p>
+                  <p className="font-semibold text-slate-900 dark:text-slate-100">{valueMap[field.key] || '—'}</p>
                 </div>
               ))}
             </div>

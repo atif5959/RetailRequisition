@@ -10,10 +10,10 @@ const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFr
 const PAGE_SIZE = 10;
 
 const cellInput =
-  'w-full rounded-lg border border-red-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-900 focus:border-red-500 focus:ring-2 focus:ring-red-100 focus:outline-none transition';
+  'w-full rounded-lg border border-red-300 dark:border-red-800 bg-white dark:bg-slate-700 px-3 py-1.5 text-sm font-semibold text-slate-900 dark:text-white focus:border-red-500 focus:ring-2 focus:ring-red-100 dark:focus:ring-red-900/30 focus:outline-none transition';
 
 const modalInput =
-  'w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-red-400 focus:bg-white focus:ring-4 focus:ring-red-100 focus:outline-none transition';
+  'w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 px-4 py-3 text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-red-400 focus:bg-white dark:focus:bg-slate-600 focus:ring-4 focus:ring-red-100 dark:focus:ring-red-900/30 focus:outline-none transition';
 
 export default function FieldManager({ items: initial }: { items: RetailItemRow[] }) {
   const [items, setItems]           = useState<RetailItemRow[]>(initial);
@@ -125,13 +125,13 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
   const modal = modalOpen ? (
     <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
       <div className="absolute inset-0" onClick={closeModal} />
-      <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-3xl shadow-2xl overflow-hidden">
 
         {/* Close */}
         <button
           type="button"
           onClick={closeModal}
-          className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 transition"
+          className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-400 transition"
           aria-label="Close"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -148,7 +148,7 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
         {/* Form */}
         <form onSubmit={addItem} noValidate className="px-8 py-7 space-y-5">
           <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               Item Name
             </label>
             <input
@@ -162,7 +162,7 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               Unit Price (PKR)
             </label>
             <input
@@ -188,7 +188,7 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
             <button
               type="button"
               onClick={closeModal}
-              className="px-5 py-3 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition"
+              className="px-5 py-3 rounded-xl border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition"
             >
               Cancel
             </button>
@@ -201,13 +201,13 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
   return (
     <div>
       {/* Items table */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
 
         {/* Table header */}
-        <div className="px-4 sm:px-6 py-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="px-4 sm:px-6 py-5 border-b border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h2 className="font-bold text-slate-900">Requisition Form Items</h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <h2 className="font-bold text-slate-900 dark:text-white">Requisition Form Items</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               {items.length} item{items.length !== 1 ? 's' : ''} — changes take effect on new submissions
             </p>
           </div>
@@ -222,7 +222,7 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
                 placeholder="Search items..."
                 value={search}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-red-400 focus:bg-white focus:ring-4 focus:ring-red-100 focus:outline-none transition"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-red-400 focus:bg-white dark:focus:bg-slate-600 focus:ring-4 focus:ring-red-100 dark:focus:ring-red-900/30 focus:outline-none transition"
               />
             </div>
             <button
@@ -251,7 +251,7 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
             <tbody>
               {pageItems.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-5 py-12 text-center text-slate-400 text-sm">
+                  <td colSpan={4} className="px-5 py-12 text-center text-slate-400 dark:text-slate-500 text-sm">
                     {search ? `No items match "${search}"` : 'No items yet. Click "Add Item" to create one.'}
                   </td>
                 </tr>
@@ -259,8 +259,8 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
               {pageItems.map((item, i) => {
                 const globalIndex = (currentPage - 1) * PAGE_SIZE + i;
                 return (
-                <tr key={item.id} className={`border-t border-slate-100 ${i % 2 === 1 ? 'bg-slate-50/50' : ''}`}>
-                  <td className="px-5 py-3 text-slate-400 text-xs font-mono">{globalIndex + 1}</td>
+                <tr key={item.id} className={`border-t border-slate-100 dark:border-slate-700 ${i % 2 === 1 ? 'bg-slate-50/50 dark:bg-slate-700/30' : ''}`}>
+                  <td className="px-5 py-3 text-slate-400 dark:text-slate-500 text-xs font-mono">{globalIndex + 1}</td>
 
                   <td className="px-5 py-3">
                     {editingId === item.id ? (
@@ -270,7 +270,7 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
                         className={cellInput}
                       />
                     ) : (
-                      <span className="font-semibold text-slate-800">{item.label}</span>
+                      <span className="font-semibold text-slate-800 dark:text-slate-100">{item.label}</span>
                     )}
                   </td>
 
@@ -285,7 +285,7 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
                         className={`${cellInput} text-right`}
                       />
                     ) : (
-                      <p className="text-right font-semibold text-slate-700">{fmt.format(item.price)}</p>
+                      <p className="text-right font-semibold text-slate-700 dark:text-slate-200">{fmt.format(item.price)}</p>
                     )}
                   </td>
 
@@ -302,7 +302,7 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
                           </button>
                           <button
                             onClick={() => setEditingId(null)}
-                            className="text-xs font-semibold text-slate-500 hover:text-slate-700 px-2 py-1.5 rounded-lg hover:bg-slate-100 transition"
+                            className="text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 px-2 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition"
                           >
                             Cancel
                           </button>
@@ -311,7 +311,7 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
                         <>
                           <button
                             onClick={() => startEdit(item)}
-                            className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition"
+                            className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 px-3 py-1.5 rounded-lg transition"
                           >
                             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -321,7 +321,7 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
                           <button
                             onClick={() => removeItem(item.id)}
                             disabled={deletingId === item.id}
-                            className="inline-flex items-center gap-1 text-xs font-bold text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-lg transition disabled:opacity-50"
+                            className="inline-flex items-center gap-1 text-xs font-bold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg transition disabled:opacity-50"
                           >
                             {deletingId === item.id ? (
                               <ApiLoader label="..." />
@@ -347,15 +347,15 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="px-4 sm:px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-xs text-slate-500">
+          <div className="px-4 sm:px-6 py-4 border-t border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Showing {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filtered.length)} of {filtered.length} item{filtered.length !== 1 ? 's' : ''}
             </p>
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                className="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -368,7 +368,7 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
                   className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition
                     ${p === currentPage
                       ? 'bg-red-600 text-white shadow'
-                      : 'border border-slate-200 text-slate-600 hover:bg-slate-50'
+                      : 'border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
                     }`}
                 >
                   {p}
@@ -377,7 +377,7 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                className="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />

@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Enable class-based dark mode for Tailwind v4 */
+@variant dark (&:is(.dark *));
+
 /* Override browser-extension margin resets (e.g. Grammarly injects p { margin: 0 } outside CSS layers) */
 p.mx-auto {
   margin-inline: auto !important;
@@ -448,6 +451,46 @@ textarea {
   border-color: #f87171 !important;
   box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.18) !important;
   background-color: #fff7f7 !important;
+}
+
+/* ── Dark mode overrides for custom CSS classes ── */
+html.dark .retail-form-shell {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+
+html.dark .retail-input {
+  background: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+html.dark .retail-input:focus {
+  border-color: #ef4444 !important;
+  background: #0f172a !important;
+}
+
+html.dark .app-select {
+  background: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+  color-scheme: dark;
+}
+
+html.dark .retail-table-wrap {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+html.dark .retail-message {
+  background: #1e293b;
+  border-color: rgba(34, 197, 94, 0.3);
+  color: #f1f5f9;
+}
+
+html.dark .input-error {
+  background-color: #2d1515 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

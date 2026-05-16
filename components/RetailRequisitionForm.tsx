@@ -28,13 +28,13 @@ function formatAmount(value: number) {
 }
 
 const inputClass =
-  'w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:border-red-500 focus:ring-4 focus:ring-red-100 focus:outline-none transition';
+  'w-full rounded-xl border-2 border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-4 py-3 text-sm font-semibold text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-red-500 focus:ring-4 focus:ring-red-100 dark:focus:ring-red-900/30 focus:outline-none transition';
 
 const inputReadonlyClass =
-  'w-full rounded-xl border-2 border-slate-200 bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-500 cursor-not-allowed select-none';
+  'w-full rounded-xl border-2 border-slate-200 dark:border-slate-600 bg-slate-100 dark:bg-slate-700/50 px-4 py-3 text-sm font-semibold text-slate-500 dark:text-slate-400 cursor-not-allowed select-none';
 
 const numInputClass =
-  'w-full rounded-lg border-2 border-slate-300 bg-white px-3 py-2 text-center text-sm font-bold text-slate-900 focus:border-red-500 focus:ring-4 focus:ring-red-100 focus:outline-none transition placeholder:text-slate-300';
+  'w-full rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-center text-sm font-bold text-slate-900 dark:text-white focus:border-red-500 focus:ring-4 focus:ring-red-100 dark:focus:ring-red-900/30 focus:outline-none transition placeholder:text-slate-300 dark:placeholder:text-slate-500';
 
 export default function RetailRequisitionForm({
   items,
@@ -117,15 +117,15 @@ export default function RetailRequisitionForm({
   /* ── Thank-you screen ── */
   if (submitted) {
     return (
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center justify-center py-24 px-8 text-center space-y-6 anim-section-1">
-        <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center anim-pop-in">
-          <svg className="w-10 h-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col items-center justify-center py-24 px-8 text-center space-y-6 anim-section-1">
+        <div className="w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center anim-pop-in">
+          <svg className="w-10 h-10 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         </div>
         <div>
-          <h2 className="text-2xl font-extrabold text-slate-900">Submitted Successfully!</h2>
-          <p className="text-slate-500 mt-2 max-w-sm mx-auto">
+          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">Submitted Successfully!</h2>
+          <p className="text-slate-500 dark:text-slate-400 mt-2 max-w-sm mx-auto">
             Your requisition has been recorded and is now pending review.
           </p>
         </div>
@@ -190,7 +190,7 @@ export default function RetailRequisitionForm({
     <form onSubmit={onSubmit} noValidate className="space-y-6">
 
       {/* ── REQUESTER DETAILS ── */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden anim-section-1">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden anim-section-1">
         {/* Section header */}
         <div className="bg-gradient-to-r from-slate-900 to-slate-800 px-6 py-4 flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center flex-shrink-0">
@@ -204,7 +204,7 @@ export default function RetailRequisitionForm({
         <div className="p-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {retailHeaderFields.map((field) => (
             <label key={field.key} className="space-y-2">
-              <span className="text-xs font-extrabold uppercase tracking-widest text-slate-500 flex items-center gap-2">
+              <span className="text-xs font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center gap-2">
                 {field.label}
                 {field.key === 'EmpCode' && isEmployee && (
                   <span className="text-[10px] font-bold bg-blue-100 text-blue-600 rounded-full px-2 py-0.5 uppercase tracking-wide">
@@ -292,7 +292,7 @@ export default function RetailRequisitionForm({
       </div>
 
       {/* ── STOCK ITEMS ── */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden anim-section-2">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden anim-section-2">
         {/* Section header */}
         <div className="bg-gradient-to-r from-slate-900 to-slate-800 px-6 py-4 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -303,25 +303,25 @@ export default function RetailRequisitionForm({
             </div>
             <h2 className="text-sm font-extrabold uppercase tracking-widest text-white">Stock Items</h2>
           </div>
-          <span className="text-xs font-bold text-slate-400">{items.length} items</span>
+          <span className="text-xs font-bold text-slate-400 dark:text-slate-500">{items.length} items</span>
         </div>
 
         {/* ── Mobile card layout ── */}
-        <div className="md:hidden divide-y divide-slate-100">
+        <div className="md:hidden divide-y divide-slate-100 dark:divide-slate-700">
           {items.map((item) => {
             const stockKey = getInHandStockKey(item.key);
             const total = itemTotals[item.totalKey] || 0;
             return (
               <div key={item.key} className="p-4 space-y-3">
                 <div className="flex items-start justify-between gap-2">
-                  <span className="text-sm font-bold text-slate-800 leading-snug flex-1">{item.label}</span>
-                  <span className="text-xs font-bold text-slate-500 bg-slate-100 rounded-lg px-2.5 py-1 flex-shrink-0">
+                  <span className="text-sm font-bold text-slate-800 dark:text-slate-100 leading-snug flex-1">{item.label}</span>
+                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 rounded-lg px-2.5 py-1 flex-shrink-0">
                     PKR {formatAmount(item.price)}
                   </span>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-extrabold uppercase tracking-wider text-slate-500">In Hand Stock</label>
+                    <label className="text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">In Hand Stock</label>
                     <input
                       name={stockKey}
                       type="number"
@@ -334,7 +334,7 @@ export default function RetailRequisitionForm({
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Quantity</label>
+                    <label className="text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">Quantity</label>
                     <input
                       name={item.key}
                       type="number"
@@ -347,9 +347,9 @@ export default function RetailRequisitionForm({
                     />
                   </div>
                 </div>
-                <div className={`flex items-center justify-between rounded-xl px-4 py-2.5 border-2 ${total > 0 ? 'bg-red-50 border-red-200' : 'bg-slate-50 border-slate-200'}`}>
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Total</span>
-                  <span className={`text-sm font-black ${total > 0 ? 'text-red-600' : 'text-slate-400'}`}>
+                <div className={`flex items-center justify-between rounded-xl px-4 py-2.5 border-2 ${total > 0 ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800' : 'bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600'}`}>
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total</span>
+                  <span className={`text-sm font-black ${total > 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-400 dark:text-slate-500'}`}>
                     {formatAmount(total)}
                   </span>
                 </div>
@@ -362,11 +362,11 @@ export default function RetailRequisitionForm({
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full min-w-[820px] text-sm">
             <thead>
-              <tr className="bg-slate-100 border-b-2 border-slate-200">
-                <th className="px-5 py-3.5 text-left text-xs font-extrabold uppercase tracking-widest text-slate-600">Item</th>
-                <th className="px-4 py-3.5 text-center text-xs font-extrabold uppercase tracking-widest text-slate-600 w-[16%]">In Hand Stock</th>
-                <th className="px-4 py-3.5 text-center text-xs font-extrabold uppercase tracking-widest text-slate-600 w-[16%]">Quantity</th>
-                <th className="px-4 py-3.5 text-center text-xs font-extrabold uppercase tracking-widest text-slate-600 w-[14%]">Price</th>
+              <tr className="bg-slate-100 dark:bg-slate-700 border-b-2 border-slate-200 dark:border-slate-600">
+                <th className="px-5 py-3.5 text-left text-xs font-extrabold uppercase tracking-widest text-slate-600 dark:text-slate-300">Item</th>
+                <th className="px-4 py-3.5 text-center text-xs font-extrabold uppercase tracking-widest text-slate-600 dark:text-slate-300 w-[16%]">In Hand Stock</th>
+                <th className="px-4 py-3.5 text-center text-xs font-extrabold uppercase tracking-widest text-slate-600 dark:text-slate-300 w-[16%]">Quantity</th>
+                <th className="px-4 py-3.5 text-center text-xs font-extrabold uppercase tracking-widest text-slate-600 dark:text-slate-300 w-[14%]">Price</th>
                 <th className="px-4 py-3.5 text-center text-xs font-extrabold uppercase tracking-widest text-red-600 w-[14%]">Total</th>
               </tr>
             </thead>
@@ -377,11 +377,11 @@ export default function RetailRequisitionForm({
                 return (
                   <tr
                     key={item.key}
-                    className={`border-b border-slate-100 transition-colors row-enter ${index % 2 === 1 ? 'bg-slate-50/70' : 'bg-white'} hover:bg-red-50/40`}
+                    className={`border-b border-slate-100 dark:border-slate-700 transition-colors row-enter ${index % 2 === 1 ? 'bg-slate-50/70 dark:bg-slate-700/30' : 'bg-white dark:bg-slate-800'} hover:bg-red-50/40 dark:hover:bg-red-900/10`}
                     style={{ animationDelay: `${0.22 + index * 0.03}s` }}
                   >
                     <td className="px-5 py-3">
-                      <span className="font-bold text-slate-800">{item.label}</span>
+                      <span className="font-bold text-slate-800 dark:text-slate-100">{item.label}</span>
                     </td>
                     <td className="px-4 py-3">
                       <input
@@ -408,7 +408,7 @@ export default function RetailRequisitionForm({
                       />
                     </td>
                     <td className="px-4 py-3">
-                      <div className="text-center px-3 py-2 text-sm font-bold text-slate-600 bg-slate-100 rounded-lg border border-slate-200">
+                      <div className="text-center px-3 py-2 text-sm font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600">
                         {formatAmount(item.price)}
                       </div>
                     </td>
@@ -417,8 +417,8 @@ export default function RetailRequisitionForm({
                         key={total > 0 ? 'active' : 'zero'}
                         className={`text-center px-3 py-2 text-sm font-black rounded-lg border-2 transition-colors
                           ${total > 0
-                            ? 'bg-red-50 border-red-200 text-red-600 anim-total-pop'
-                            : 'bg-slate-50 border-slate-200 text-slate-400'
+                            ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 anim-total-pop'
+                            : 'bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-400 dark:text-slate-500'
                           }`}
                       >
                         {formatAmount(total)}
@@ -457,7 +457,7 @@ export default function RetailRequisitionForm({
           {loading ? <ApiLoader label="Submitting" /> : 'Submit Requisition →'}
         </button>
         {error && (
-          <div key={error} className="anim-shake flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm font-semibold px-4 py-3 rounded-xl">
+          <div key={error} className="anim-shake flex items-center gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm font-semibold px-4 py-3 rounded-xl">
             <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
             </svg>

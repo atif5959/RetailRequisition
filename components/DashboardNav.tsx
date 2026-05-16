@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import LogoutButton from '@/components/LogoutButton';
+import DarkModeToggle from '@/components/DarkModeToggle';
 
 const navItems = [
   {
@@ -80,7 +81,11 @@ export default function DashboardNav({ role }: { role?: string }) {
           <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Navigation</span>
         </div>
         <nav className="flex-1 px-3 space-y-1">{navLinks()}</nav>
-        <div className="px-3 pb-6 pt-4 border-t border-slate-700/60 mt-4">
+        <div className="px-3 pb-6 pt-4 border-t border-slate-700/60 mt-4 space-y-2">
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-slate-400 text-sm font-semibold">
+            <DarkModeToggle className="!w-5 !h-5" />
+            <span>Toggle theme</span>
+          </div>
           <LogoutButton />
         </div>
       </aside>
@@ -90,15 +95,18 @@ export default function DashboardNav({ role }: { role?: string }) {
         <Link href="/" className="flex items-center gap-2">
           <img src={LOGO} alt="Logo" className="h-9 w-auto brightness-0 invert opacity-90" />
         </Link>
-        <button
-          onClick={() => setOpen(true)}
-          className="p-2 text-slate-300 hover:text-white transition"
-          aria-label="Open menu"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
+        <div className="flex items-center gap-1">
+          <DarkModeToggle />
+          <button
+            onClick={() => setOpen(true)}
+            className="p-2 text-slate-300 hover:text-white transition"
+            aria-label="Open menu"
+          >
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* ── MOBILE DRAWER OVERLAY ── */}

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import RetailRequisitionForm from '@/components/RetailRequisitionForm';
 import FormLogoutButton from '@/components/FormLogoutButton';
+import DarkModeToggle from '@/components/DarkModeToggle';
 import LoginModal from '@/components/LoginModal';
 import { getRetailItems } from '@/lib/getRetailItems';
 import { getCurrentProfile } from '@/lib/auth';
@@ -25,21 +26,23 @@ export default async function RetailFormPage() {
   const items   = await getRetailItems();
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
 
       {/* Login modal — shown as overlay when not authenticated */}
       {!profile && <LoginModal />}
 
       {/* Nav */}
-      <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
+      <header className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 shadow-sm">
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
             <img
               src="https://www.cognitoforms.com/file/YlX_ys5JvAugKr0_J7gDB_8tKeqbjCkjA41iDR7EEgPx2m2Fpmmbl9fVpkvn8r2t"
               alt="Logo"
-              className="h-11 w-auto"
+              className="h-11 w-auto dark:brightness-0 dark:invert dark:opacity-80"
             />
           </Link>
+          <div className="flex items-center gap-2">
+            <DarkModeToggle />
           {profile && (
             <div className="flex items-center gap-3">
               <span className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-slate-400">
@@ -62,14 +65,15 @@ export default async function RetailFormPage() {
               <FormLogoutButton />
             </div>
           )}
+          </div>
         </div>
       </header>
 
       {/* Page header */}
-      <div className="bg-white border-b border-slate-200">
+      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
         <div className="mx-auto max-w-7xl px-6 py-6">
-          <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-1">Submit</p>
-          <h1 className="text-2xl font-extrabold text-slate-900">Retail Requisition</h1>
+          <p className="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1">Submit</p>
+          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">Retail Requisition</h1>
         </div>
       </div>
 

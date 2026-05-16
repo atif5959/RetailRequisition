@@ -69,7 +69,7 @@ export default function LoginModal() {
       {/* Backdrop click closes modal */}
       <div className="absolute inset-0" onClick={handleClose} />
 
-      <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-3xl shadow-2xl overflow-hidden">
 
         {/* Close button */}
         <button
@@ -98,7 +98,7 @@ export default function LoginModal() {
         <form onSubmit={(e) => doLogin(e)} noValidate className="px-8 py-8 space-y-5">
 
           <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {isEmpCode ? 'Emp Code' : 'Email Address'}
             </label>
             <input
@@ -111,10 +111,10 @@ export default function LoginModal() {
               onKeyDown={(e) => { if (e.key === 'Enter') doLogin(e); }}
               placeholder="Email address or Emp Code"
               autoFocus
-              className={`w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-red-400 focus:bg-white focus:ring-4 focus:ring-red-100 focus:outline-none transition ${errors.identifier ? 'input-error' : ''}`}
+              className={`w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 px-4 py-3 text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-red-400 focus:bg-white dark:focus:bg-slate-600 focus:ring-4 focus:ring-red-100 focus:outline-none transition ${errors.identifier ? 'input-error' : ''}`}
             />
             <FieldError msg={errors.identifier} />
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-400 dark:text-slate-500">
               {isEmpCode
                 ? `Signing in as employee — code: ${identifier.trim()}`
                 : 'Employees can enter their Emp Code instead of an email.'}
@@ -122,7 +122,7 @@ export default function LoginModal() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               Password
             </label>
             <div className="relative">
@@ -135,7 +135,7 @@ export default function LoginModal() {
                 }}
                 onKeyDown={(e) => { if (e.key === 'Enter') doLogin(e); }}
                 placeholder="••••••••"
-                className={`w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 pr-11 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-red-400 focus:bg-white focus:ring-4 focus:ring-red-100 focus:outline-none transition ${errors.password ? 'input-error' : ''}`}
+                className={`w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 px-4 py-3 pr-11 text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-red-400 focus:bg-white dark:focus:bg-slate-600 focus:ring-4 focus:ring-red-100 focus:outline-none transition ${errors.password ? 'input-error' : ''}`}
               />
               <button
                 type="button"
@@ -175,7 +175,7 @@ export default function LoginModal() {
             {loading ? <ApiLoader label="Signing in" /> : 'Sign In →'}
           </button>
 
-          <p className="text-center text-xs text-slate-400">
+          <p className="text-center text-xs text-slate-400 dark:text-slate-500">
             For access, contact your system administrator.
           </p>
         </form>

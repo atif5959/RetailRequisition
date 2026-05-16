@@ -10,7 +10,7 @@ const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFr
 const formatAmount = (n: number) => fmt.format(n);
 
 const numInputClass =
-  'w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-right text-sm font-semibold text-slate-900 focus:border-red-400 focus:ring-4 focus:ring-red-100 focus:outline-none transition';
+  'w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-right text-sm font-semibold text-slate-900 dark:text-white focus:border-red-400 focus:ring-4 focus:ring-red-100 dark:focus:ring-red-900/30 focus:outline-none transition';
 
 export default function QuantityEditor({
   submissionId,
@@ -64,12 +64,12 @@ export default function QuantityEditor({
     : (valueMap.GrandTotal || '0.00');
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
 
       {/* Card header */}
-      <div className="px-4 sm:px-6 py-4 border-b border-slate-100 flex items-center justify-between gap-3">
-        <h2 className="font-bold text-slate-900">Submitted Items</h2>
-        <span className="text-base sm:text-lg font-extrabold text-red-600 whitespace-nowrap">
+      <div className="px-4 sm:px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between gap-3">
+        <h2 className="font-bold text-slate-900 dark:text-white">Submitted Items</h2>
+        <span className="text-base sm:text-lg font-extrabold text-red-600 dark:text-red-400 whitespace-nowrap">
           Grand Total: {grandTotalValue}
         </span>
       </div>
@@ -88,9 +88,9 @@ export default function QuantityEditor({
           </thead>
           <tbody>
             {items.map((item, i) => (
-              <tr key={item.key} className={`border-t border-slate-100 ${i % 2 === 1 ? 'bg-slate-50/60' : ''}`}>
-                <td className="px-5 py-3 font-semibold text-slate-800">{item.label}</td>
-                <td className="px-5 py-3 text-right text-slate-600">
+              <tr key={item.key} className={`border-t border-slate-100 dark:border-slate-700 ${i % 2 === 1 ? 'bg-slate-50/60 dark:bg-slate-700/30' : ''}`}>
+                <td className="px-5 py-3 font-semibold text-slate-800 dark:text-slate-100">{item.label}</td>
+                <td className="px-5 py-3 text-right text-slate-600 dark:text-slate-300">
                   {valueMap[getInHandStockKey(item.key)] || '0'}
                 </td>
                 <td className="px-5 py-3 w-32">
@@ -106,15 +106,15 @@ export default function QuantityEditor({
                       className={numInputClass}
                     />
                   ) : (
-                    <span className="block text-right text-slate-600">
+                    <span className="block text-right text-slate-600 dark:text-slate-300">
                       {valueMap[item.key] || '0'}
                     </span>
                   )}
                 </td>
-                <td className="px-5 py-3 text-right text-slate-600">
+                <td className="px-5 py-3 text-right text-slate-600 dark:text-slate-300">
                   {valueMap[item.priceKey] || '0.00'}
                 </td>
-                <td className="px-5 py-3 text-right font-bold text-slate-900">
+                <td className="px-5 py-3 text-right font-bold text-slate-900 dark:text-white">
                   {isPending
                     ? formatAmount(getTotal(item))
                     : (valueMap[item.totalKey] || '0.00')}
@@ -126,7 +126,7 @@ export default function QuantityEditor({
       </div>
 
       {/* ── MOBILE CARDS (below sm) ── */}
-      <div className="block sm:hidden divide-y divide-slate-100">
+      <div className="block sm:hidden divide-y divide-slate-100 dark:divide-slate-700">
         {items.map((item) => {
           const inHand = valueMap[getInHandStockKey(item.key)] || '0';
           const total  = isPending
@@ -137,18 +137,18 @@ export default function QuantityEditor({
 
           return (
             <div key={item.key} className="px-4 py-4 space-y-3">
-              <p className="font-bold text-slate-900 text-sm">{item.label}</p>
+              <p className="font-bold text-slate-900 dark:text-white text-sm">{item.label}</p>
               <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="bg-slate-50 rounded-lg px-3 py-2">
-                  <p className="text-slate-400 font-semibold uppercase tracking-wide mb-0.5">In Hand</p>
-                  <p className="font-bold text-slate-700">{inHand}</p>
+                <div className="bg-slate-50 dark:bg-slate-700 rounded-lg px-3 py-2">
+                  <p className="text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wide mb-0.5">In Hand</p>
+                  <p className="font-bold text-slate-700 dark:text-slate-200">{inHand}</p>
                 </div>
-                <div className="bg-slate-50 rounded-lg px-3 py-2">
-                  <p className="text-slate-400 font-semibold uppercase tracking-wide mb-0.5">Price</p>
-                  <p className="font-bold text-slate-700">{price}</p>
+                <div className="bg-slate-50 dark:bg-slate-700 rounded-lg px-3 py-2">
+                  <p className="text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wide mb-0.5">Price</p>
+                  <p className="font-bold text-slate-700 dark:text-slate-200">{price}</p>
                 </div>
-                <div className="bg-slate-50 rounded-lg px-3 py-2">
-                  <p className="text-slate-400 font-semibold uppercase tracking-wide mb-1">Quantity</p>
+                <div className="bg-slate-50 dark:bg-slate-700 rounded-lg px-3 py-2">
+                  <p className="text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wide mb-1">Quantity</p>
                   {isPending ? (
                     <input
                       type="number"
@@ -158,15 +158,15 @@ export default function QuantityEditor({
                       onChange={(e) =>
                         setQuantities((q) => ({ ...q, [item.key]: e.target.value }))
                       }
-                      className="w-full rounded-md border border-slate-200 bg-white px-2 py-1 text-right text-sm font-semibold text-slate-900 focus:border-red-400 focus:ring-2 focus:ring-red-100 focus:outline-none transition"
+                      className="w-full rounded-md border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-600 px-2 py-1 text-right text-sm font-semibold text-slate-900 dark:text-white focus:border-red-400 focus:ring-2 focus:ring-red-100 focus:outline-none transition"
                     />
                   ) : (
-                    <p className="font-bold text-slate-700">{qty}</p>
+                    <p className="font-bold text-slate-700 dark:text-slate-200">{qty}</p>
                   )}
                 </div>
-                <div className="bg-red-50 rounded-lg px-3 py-2">
+                <div className="bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2">
                   <p className="text-red-400 font-semibold uppercase tracking-wide mb-0.5">Total</p>
-                  <p className="font-bold text-red-700">{total}</p>
+                  <p className="font-bold text-red-700 dark:text-red-400">{total}</p>
                 </div>
               </div>
             </div>
@@ -176,7 +176,7 @@ export default function QuantityEditor({
 
       {/* Save bar — only shown when pending */}
       {isPending && (
-        <div className="border-t border-slate-200 px-4 sm:px-6 py-4 flex flex-wrap items-center gap-3 bg-slate-50">
+        <div className="border-t border-slate-200 dark:border-slate-700 px-4 sm:px-6 py-4 flex flex-wrap items-center gap-3 bg-slate-50 dark:bg-slate-900/50">
           <button
             onClick={handleSave}
             disabled={saving}
@@ -184,8 +184,8 @@ export default function QuantityEditor({
           >
             {saving ? <ApiLoader label="Saving" /> : 'Save Changes'}
           </button>
-          {savedMsg && <span className="text-sm font-semibold text-green-600">{savedMsg}</span>}
-          {error && <span className="text-sm font-semibold text-red-600">{error}</span>}
+          {savedMsg && <span className="text-sm font-semibold text-green-600 dark:text-green-400">{savedMsg}</span>}
+          {error && <span className="text-sm font-semibold text-red-600 dark:text-red-400">{error}</span>}
         </div>
       )}
     </div>

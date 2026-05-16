@@ -101,7 +101,7 @@ export default function AppSelect({
     <div
       ref={listRef}
       style={dropdownStyle}
-      className="bg-white rounded-xl border border-slate-200 shadow-xl py-1 overflow-y-auto max-h-60"
+      className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-600 shadow-xl py-1 overflow-y-auto max-h-60"
     >
       {options.map((opt) => {
         const isSelected = opt.value === value;
@@ -112,8 +112,8 @@ export default function AppSelect({
             onClick={() => { onChange(opt.value); setOpen(false); }}
             className={`w-full text-left px-4 py-3 text-sm font-medium transition flex items-center gap-2
               ${isSelected
-                ? 'bg-red-50 text-red-600 font-semibold'
-                : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-semibold'
+                : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white'
               }`}
           >
             {isSelected ? (
@@ -138,18 +138,20 @@ export default function AppSelect({
         disabled={disabled}
         onClick={toggle}
         className={`w-full h-11 flex items-center justify-between gap-2 rounded-xl border px-4 text-sm font-semibold transition
-          focus:outline-none focus:ring-4 focus:ring-red-100
-          ${disabled ? 'opacity-50 cursor-not-allowed bg-slate-100 border-slate-200 text-slate-400' : 'bg-white cursor-pointer'}
+          focus:outline-none focus:ring-4 focus:ring-red-100 dark:focus:ring-red-900/30
+          ${disabled
+            ? 'opacity-50 cursor-not-allowed bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-400 dark:text-slate-500'
+            : 'bg-white dark:bg-slate-800 cursor-pointer'}
           ${open
-            ? 'border-red-400 ring-4 ring-red-100 bg-white'
+            ? `border-red-400 ring-4 ring-red-100 dark:ring-red-900/30 bg-white dark:bg-slate-800 ${hasValue ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`
             : hasValue
-              ? 'border-slate-200 text-slate-900 hover:border-red-300'
-              : 'border-slate-200 text-slate-400 hover:border-red-300'
+              ? 'border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white hover:border-red-300'
+              : 'border-slate-200 dark:border-slate-600 text-slate-400 dark:text-slate-500 hover:border-red-300'
           }`}
       >
         <span className="truncate">{displayLabel}</span>
         <svg
-          className={`w-4 h-4 flex-shrink-0 transition-transform ${open ? 'rotate-180 text-red-400' : 'text-slate-400'}`}
+          className={`w-4 h-4 flex-shrink-0 transition-transform ${open ? 'rotate-180 text-red-400' : 'text-slate-400 dark:text-slate-500'}`}
           fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />

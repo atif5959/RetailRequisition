@@ -63,7 +63,7 @@ export default function StatusButtons({ id }: { id: string }) {
       <button
         disabled={busy}
         onClick={() => update('pending')}
-        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-200 text-slate-700 text-sm font-bold hover:bg-slate-300 transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
+        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-bold hover:bg-slate-300 dark:hover:bg-slate-600 transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
       >
         {savingStatus === 'pending' ? (
           <ApiLoader label="Saving" />

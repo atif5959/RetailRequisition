@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import DarkModeToggle from '@/components/DarkModeToggle';
 
 export const metadata: Metadata = {
   title: 'TCS Retail Requisition — Submit & Track Stock Requests',
@@ -18,16 +19,17 @@ const LOGO = 'https://www.cognitoforms.com/file/YlX_ys5JvAugKr0_J7gDB_8tKeqbjCkj
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white text-slate-900 overflow-x-hidden">
+    <div className="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-white overflow-x-hidden">
 
       {/* ── NAVIGATION ── */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-100 shadow-sm">
+      <header className="sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-b border-slate-100 dark:border-slate-700 shadow-sm">
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
-          <Image src={LOGO} alt="TCS Logo" width={140} height={36} className="h-9 w-auto" priority />
-          <nav className="flex items-center gap-6 text-sm font-semibold text-slate-600">
-            <a href="#how-it-works" className="hidden md:inline hover:text-red-600 transition">How It Works</a>
-            <a href="#features"     className="hidden md:inline hover:text-red-600 transition">Features</a>
-            <a href="#roles"        className="hidden md:inline hover:text-red-600 transition">Roles</a>
+          <Image src={LOGO} alt="TCS Logo" width={140} height={36} className="h-9 w-auto dark:brightness-0 dark:invert dark:opacity-80" priority />
+          <nav className="flex items-center gap-4 text-sm font-semibold text-slate-600 dark:text-slate-300">
+            <a href="#how-it-works" className="hidden md:inline hover:text-red-600 dark:hover:text-red-400 transition">How It Works</a>
+            <a href="#features"     className="hidden md:inline hover:text-red-600 dark:hover:text-red-400 transition">Features</a>
+            <a href="#roles"        className="hidden md:inline hover:text-red-600 dark:hover:text-red-400 transition">Roles</a>
+            <DarkModeToggle />
             <Link
               href="/dashboard/requisitions"
               className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-2.5 rounded-full transition shadow-sm"
@@ -39,25 +41,29 @@ export default function HomePage() {
       </header>
 
       {/* ── HERO ── */}
-      <section className="relative overflow-hidden bg-slate-900 py-20 sm:py-32 px-6">
-        {/* Background decoration */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(220,38,38,0.25),transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(220,38,38,0.12),transparent_55%)]" />
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-600/50 to-transparent" />
+      <section className="relative overflow-hidden bg-white dark:bg-slate-900 py-20 sm:py-32 px-6">
+        {/* Light mode: rich layered gradient */}
+        <div className="block dark:hidden absolute inset-0 bg-gradient-to-br from-red-50/80 via-white to-rose-50/50" />
+        <div className="block dark:hidden absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_top_right,rgba(220,38,38,0.18),transparent)]" />
+        <div className="block dark:hidden absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_bottom_left,rgba(239,68,68,0.10),transparent)]" />
+        {/* Dark mode: vivid red glows */}
+        <div className="hidden dark:block absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(220,38,38,0.25),transparent_60%)]" />
+        <div className="hidden dark:block absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(220,38,38,0.12),transparent_55%)]" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-400/40 dark:via-red-600/50 to-transparent" />
 
         <div className="relative mx-auto max-w-5xl text-center space-y-8">
-          <span className="inline-flex items-center gap-2 bg-red-600/20 border border-red-500/30 text-red-400 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full">
+          <span className="inline-flex items-center gap-2 bg-red-50 dark:bg-red-600/20 border border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full">
             <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
             TCS Retail Operations Platform
           </span>
 
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-[1.08] tracking-tight">
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-slate-900 dark:text-white leading-[1.08] tracking-tight">
             Stock Requisitions,<br />
             <span className="text-red-500">Simplified.</span>
           </h1>
 
           <div className="max-w-2xl mx-auto">
-            <p className="text-lg sm:text-xl text-slate-400 leading-relaxed text-center">
+            <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400 leading-relaxed text-center">
               A complete digital platform for TCS retail teams to submit stock requests, track approvals in real time, and manage fulfilment across all regions — paperless and instant.
             </p>
           </div>
@@ -74,7 +80,7 @@ export default function HomePage() {
             </Link>
             <Link
               href="/dashboard/requisitions"
-              className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-base px-8 py-4 rounded-2xl transition"
+              className="inline-flex items-center justify-center gap-2 bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 border border-slate-200 dark:border-white/20 text-slate-800 dark:text-white font-bold text-base px-8 py-4 rounded-2xl transition"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -84,7 +90,7 @@ export default function HomePage() {
           </div>
 
           {/* Stats row */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-10 border-t border-white/10">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-10 border-t border-slate-200 dark:border-white/10">
             {[
               { val: '3 Roles', sub: 'Head · Admin · Employee' },
               { val: 'Real-Time', sub: 'Status updates' },
@@ -92,8 +98,8 @@ export default function HomePage() {
               { val: 'Mobile Ready', sub: 'Any device' },
             ].map((s) => (
               <div key={s.val} className="text-center">
-                <p className="text-2xl font-black text-white">{s.val}</p>
-                <p className="text-xs text-slate-500 mt-1">{s.sub}</p>
+                <p className="text-2xl font-black text-slate-900 dark:text-white">{s.val}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">{s.sub}</p>
               </div>
             ))}
           </div>
@@ -101,20 +107,20 @@ export default function HomePage() {
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section id="how-it-works" className="py-20 sm:py-28 px-6 bg-slate-50">
+      <section id="how-it-works" className="py-20 sm:py-28 px-6 bg-slate-50 dark:bg-slate-800">
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-16">
             <span className="text-xs font-extrabold uppercase tracking-widest text-red-600">Step by Step</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">How It Works</h2>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-2">How It Works</h2>
             <div className="max-w-xl mx-auto mt-3">
-              <p className="text-slate-500 text-lg text-center">From login to approval in four simple steps</p>
+              <p className="text-slate-600 dark:text-slate-500 text-lg text-center">From login to approval in four simple steps</p>
             </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
 
             {/* Step 1 */}
-            <div className="bg-white rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-md transition">
+            <div className="bg-white dark:bg-slate-700 rounded-2xl p-8 border border-slate-100 dark:border-slate-600 shadow-sm relative overflow-hidden group hover:shadow-md transition">
               <div className="absolute top-0 left-0 w-1 h-full bg-red-600 rounded-l-2xl" />
               <div className="flex items-start gap-5">
                 <div className="w-12 h-12 rounded-2xl bg-red-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-red-200">
@@ -126,9 +132,9 @@ export default function HomePage() {
                   <div className="flex items-center gap-3 mb-2">
                     <span className="text-xs font-black text-red-600 uppercase tracking-widest">Step 01</span>
                   </div>
-                  <h3 className="text-lg font-extrabold text-slate-900 mb-2">Login with Your Credentials</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed">
-                    Employees log in using their <strong className="text-slate-700">Emp Code</strong> (e.g. 1111) or email address. Admins and heads use their email. Your region and emp code are automatically detected.
+                  <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-2">Login with Your Credentials</h3>
+                  <p className="text-slate-500 dark:text-slate-300 text-sm leading-relaxed">
+                    Employees log in using their <strong className="text-slate-700 dark:text-slate-200">Emp Code</strong> (e.g. 1111) or email address. Admins and heads use their email. Your region and emp code are automatically detected.
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     {['Emp Code login', 'Email login', 'Auto region detection'].map((t) => (
@@ -140,7 +146,7 @@ export default function HomePage() {
             </div>
 
             {/* Step 2 */}
-            <div className="bg-white rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-md transition">
+            <div className="bg-white dark:bg-slate-700 rounded-2xl p-8 border border-slate-100 dark:border-slate-600 shadow-sm relative overflow-hidden group hover:shadow-md transition">
               <div className="absolute top-0 left-0 w-1 h-full bg-slate-700 rounded-l-2xl" />
               <div className="flex items-start gap-5">
                 <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center flex-shrink-0 shadow-lg shadow-slate-200">
@@ -150,15 +156,15 @@ export default function HomePage() {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="text-xs font-black text-slate-600 uppercase tracking-widest">Step 02</span>
+                    <span className="text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Step 02</span>
                   </div>
-                  <h3 className="text-lg font-extrabold text-slate-900 mb-2">Fill the Requester Details</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed">
-                    Your <strong className="text-slate-700">Region is auto-filled</strong> and locked. Enter your <strong className="text-slate-700">Route Code</strong> (X followed by numbers), Location, and 3-letter Origin code.
+                  <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-2">Fill the Requester Details</h3>
+                  <p className="text-slate-500 dark:text-slate-300 text-sm leading-relaxed">
+                    Your <strong className="text-slate-700 dark:text-slate-200">Region is auto-filled</strong> and locked. Enter your <strong className="text-slate-700 dark:text-slate-200">Route Code</strong> (X followed by numbers), Location, and 3-letter Origin code.
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     {['Auto-filled Region', 'Route Code (X101)', 'Location & Origin'].map((t) => (
-                      <span key={t} className="text-xs font-semibold bg-slate-100 text-slate-700 px-3 py-1 rounded-full">{t}</span>
+                      <span key={t} className="text-xs font-semibold bg-slate-100 dark:bg-slate-600 text-slate-700 dark:text-slate-200 px-3 py-1 rounded-full">{t}</span>
                     ))}
                   </div>
                 </div>
@@ -166,7 +172,7 @@ export default function HomePage() {
             </div>
 
             {/* Step 3 */}
-            <div className="bg-white rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-md transition">
+            <div className="bg-white dark:bg-slate-700 rounded-2xl p-8 border border-slate-100 dark:border-slate-600 shadow-sm relative overflow-hidden group hover:shadow-md transition">
               <div className="absolute top-0 left-0 w-1 h-full bg-blue-600 rounded-l-2xl" />
               <div className="flex items-start gap-5">
                 <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-200">
@@ -178,9 +184,9 @@ export default function HomePage() {
                   <div className="flex items-center gap-3 mb-2">
                     <span className="text-xs font-black text-blue-600 uppercase tracking-widest">Step 03</span>
                   </div>
-                  <h3 className="text-lg font-extrabold text-slate-900 mb-2">Enter Stock Quantities</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed">
-                    For each item (36 stock items), enter your <strong className="text-slate-700">In Hand Stock</strong> and <strong className="text-slate-700">Quantity Requested</strong>. Prices and totals calculate automatically. Grand total updates live.
+                  <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-2">Enter Stock Quantities</h3>
+                  <p className="text-slate-500 dark:text-slate-300 text-sm leading-relaxed">
+                    For each item (36 stock items), enter your <strong className="text-slate-700 dark:text-slate-200">In Hand Stock</strong> and <strong className="text-slate-700 dark:text-slate-200">Quantity Requested</strong>. Prices and totals calculate automatically. Grand total updates live.
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     {['36 stock items', 'Auto price calc', 'Live grand total'].map((t) => (
@@ -192,7 +198,7 @@ export default function HomePage() {
             </div>
 
             {/* Step 4 */}
-            <div className="bg-white rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-md transition">
+            <div className="bg-white dark:bg-slate-700 rounded-2xl p-8 border border-slate-100 dark:border-slate-600 shadow-sm relative overflow-hidden group hover:shadow-md transition">
               <div className="absolute top-0 left-0 w-1 h-full bg-green-600 rounded-l-2xl" />
               <div className="flex items-start gap-5">
                 <div className="w-12 h-12 rounded-2xl bg-green-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-green-200">
@@ -204,9 +210,9 @@ export default function HomePage() {
                   <div className="flex items-center gap-3 mb-2">
                     <span className="text-xs font-black text-green-600 uppercase tracking-widest">Step 04</span>
                   </div>
-                  <h3 className="text-lg font-extrabold text-slate-900 mb-2">Submit & Get Approved</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed">
-                    Hit <strong className="text-slate-700">Submit Requisition</strong>. It instantly appears in the admin dashboard as <strong className="text-amber-600">Pending</strong>. Admins review and mark it <strong className="text-green-600">Approved</strong> or <strong className="text-red-600">Rejected</strong>.
+                  <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-2">Submit & Get Approved</h3>
+                  <p className="text-slate-500 dark:text-slate-300 text-sm leading-relaxed">
+                    Hit <strong className="text-slate-700 dark:text-slate-200">Submit Requisition</strong>. It instantly appears in the admin dashboard as <strong className="text-amber-600">Pending</strong>. Admins review and mark it <strong className="text-green-600">Approved</strong> or <strong className="text-red-600">Rejected</strong>.
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     {['Instant submission', 'Pending → Approved', 'Rejection with reason'].map((t) => (
@@ -221,13 +227,13 @@ export default function HomePage() {
       </section>
 
       {/* ── FEATURES ── */}
-      <section id="features" className="py-20 sm:py-28 px-6 bg-white">
+      <section id="features" className="py-20 sm:py-28 px-6 bg-white dark:bg-slate-900">
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-16">
             <span className="text-xs font-extrabold uppercase tracking-widest text-red-600">Platform Features</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">Everything Built In</h2>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-2">Everything Built In</h2>
             <div className="max-w-xl mx-auto mt-3">
-              <p className="text-slate-500 text-lg text-center">Every tool your retail operations team needs, in one place</p>
+              <p className="text-slate-600 dark:text-slate-500 text-lg text-center">Every tool your retail operations team needs, in one place</p>
             </div>
           </div>
 
@@ -345,12 +351,12 @@ export default function HomePage() {
               };
               const p = palette[f.color];
               return (
-                <div key={f.title} className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all group">
+                <div key={f.title} className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all group">
                   <div className={`w-12 h-12 rounded-xl ${p.bg} ${p.icon} flex items-center justify-center mb-5 group-hover:scale-105 transition-transform`}>
                     {f.icon}
                   </div>
-                  <h3 className="font-extrabold text-slate-900 mb-2">{f.title}</h3>
-                  <p className="text-sm text-slate-500 leading-relaxed mb-4">{f.desc}</p>
+                  <h3 className="font-extrabold text-slate-900 dark:text-white mb-2">{f.title}</h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-300 leading-relaxed mb-4">{f.desc}</p>
                   <div className="flex flex-wrap gap-1.5">
                     {f.tags.map((t) => (
                       <span key={t} className={`text-xs font-bold px-2.5 py-1 rounded-full ${p.tag}`}>{t}</span>
@@ -364,13 +370,13 @@ export default function HomePage() {
       </section>
 
       {/* ── ROLES ── */}
-      <section id="roles" className="py-20 sm:py-28 px-6 bg-slate-900">
+      <section id="roles" className="py-20 sm:py-28 px-6 bg-slate-100 dark:bg-slate-900">
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-16">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-red-500">Access Control</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2">Three User Roles</h2>
+            <span className="text-xs font-extrabold uppercase tracking-widest text-red-600 dark:text-red-500">Access Control</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-2">Three User Roles</h2>
             <div className="max-w-xl mx-auto mt-3">
-              <p className="text-slate-400 text-lg text-center">Each role has a specific scope and set of permissions in the system</p>
+              <p className="text-slate-600 dark:text-slate-400 text-lg text-center">Each role has a specific scope and set of permissions in the system</p>
             </div>
           </div>
 
@@ -416,7 +422,7 @@ export default function HomePage() {
                 restricted: [],
               },
             ].map((r) => (
-              <div key={r.role} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/8 transition">
+              <div key={r.role} className="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm dark:shadow-none hover:shadow-md transition">
                 <div className={`${r.headerBg} px-5 py-5 flex items-center gap-3`}>
                   <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
                     {r.icon}
@@ -432,7 +438,7 @@ export default function HomePage() {
                   {r.perms.map((p, i) => (
                     <li key={p} className="flex items-center gap-2.5 text-sm">
                       {r.restricted.includes(i) ? (
-                        <svg className="w-4 h-4 text-slate-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <svg className="w-4 h-4 text-slate-300 dark:text-slate-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       ) : (
@@ -440,7 +446,7 @@ export default function HomePage() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                       )}
-                      <span className={r.restricted.includes(i) ? 'text-slate-600' : 'text-slate-300'}>{p}</span>
+                      <span className={r.restricted.includes(i) ? 'text-slate-400 dark:text-slate-600' : 'text-slate-700 dark:text-slate-300'}>{p}</span>
                     </li>
                   ))}
                 </ul>
@@ -451,22 +457,32 @@ export default function HomePage() {
       </section>
 
       {/* ── CTA BANNER ── */}
-      <section className="bg-[linear-gradient(135deg,#b91c1c_0%,#dc2626_45%,#ef4444_100%)] py-20 px-6">
-        <div className="mx-auto max-w-3xl text-center space-y-6">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white">Ready to get started?</h2>
-          <p className="text-red-100 text-lg">
+      <section className="relative overflow-hidden bg-white dark:bg-slate-900 py-20 px-6">
+        {/* Light mode: rich layered gradient */}
+        <div className="block dark:hidden absolute inset-0 bg-gradient-to-br from-red-50/80 via-white to-rose-50/50" />
+        <div className="block dark:hidden absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_top_right,rgba(220,38,38,0.18),transparent)]" />
+        <div className="block dark:hidden absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_bottom_left,rgba(239,68,68,0.10),transparent)]" />
+        {/* Dark mode decorations */}
+        <div className="hidden dark:block absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(220,38,38,0.25),transparent_60%)]" />
+        <div className="hidden dark:block absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(220,38,38,0.12),transparent_55%)]" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-400/40 dark:via-red-600/50 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-400/30 dark:via-red-600/30 to-transparent" />
+
+        <div className="relative mx-auto max-w-3xl text-center space-y-6">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Ready to get started?</h2>
+          <p className="text-slate-600 dark:text-slate-400 text-lg">
             Employees can submit requisitions instantly. Admins can review and approve from the dashboard.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 pt-2">
             <Link
               href="/form/retail-requisition"
-              className="inline-flex items-center justify-center gap-2 bg-white text-red-600 font-extrabold text-sm px-8 py-4 rounded-2xl shadow-lg hover:bg-red-50 transition"
+              className="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-500 text-white font-extrabold text-sm px-8 py-4 rounded-2xl shadow-lg shadow-red-200 dark:shadow-red-900/40 transition"
             >
               Submit a Requisition →
             </Link>
             <Link
               href="/dashboard/requisitions"
-              className="inline-flex items-center justify-center gap-2 bg-white/15 border border-white/30 text-white font-bold text-sm px-8 py-4 rounded-2xl hover:bg-white/25 transition"
+              className="inline-flex items-center justify-center gap-2 bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 border border-slate-200 dark:border-white/20 text-slate-800 dark:text-white font-bold text-sm px-8 py-4 rounded-2xl transition"
             >
               Open Dashboard
             </Link>
@@ -475,13 +491,13 @@ export default function HomePage() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="bg-slate-950 text-slate-500 py-10 px-6">
+      <footer className="bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-500 py-10 px-6">
         <div className="mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-6">
-          <Image src={LOGO} alt="TCS Logo" width={120} height={30} className="h-7 w-auto opacity-50" />
-          <p className="text-xs text-slate-600">© {new Date().getFullYear()} TCS Retail Requisition System. All rights reserved.</p>
-          <div className="flex gap-6 text-sm">
-            <Link href="/form/retail-requisition" className="hover:text-white transition">Submit Form</Link>
-            <Link href="/dashboard/requisitions" className="hover:text-white transition">Dashboard</Link>
+          <Image src={LOGO} alt="TCS Logo" width={120} height={30} className="h-7 w-auto opacity-60 dark:opacity-30" />
+          <p className="text-xs text-slate-500 dark:text-slate-600">© {new Date().getFullYear()} TCS Retail Requisition System. All rights reserved.</p>
+          <div className="flex gap-6 text-sm text-slate-500 dark:text-slate-500">
+            <Link href="/form/retail-requisition" className="hover:text-slate-900 dark:hover:text-white transition">Submit Form</Link>
+            <Link href="/dashboard/requisitions" className="hover:text-slate-900 dark:hover:text-white transition">Dashboard</Link>
           </div>
         </div>
       </footer>

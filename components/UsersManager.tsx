@@ -40,7 +40,7 @@ const headEditRoleOptions = [
 const regionOptions = pakistanRegions.map((r) => ({ value: r, label: r }));
 
 const inputClass =
-  'w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-red-400 focus:bg-white focus:ring-4 focus:ring-red-100 focus:outline-none transition';
+  'w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 px-4 py-2.5 text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-red-400 focus:bg-white dark:focus:bg-slate-600 focus:ring-4 focus:ring-red-100 dark:focus:ring-red-900/30 focus:outline-none transition';
 
 const PAGE_SIZE = 10;
 
@@ -184,9 +184,9 @@ export default function UsersManager({
         onClick={() => setShowModal(false)}
       />
       {/* Panel */}
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
+      <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 dark:border-slate-700">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-red-600 flex items-center justify-center flex-shrink-0">
               <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -194,8 +194,8 @@ export default function UsersManager({
               </svg>
             </div>
             <div>
-              <h2 className="font-bold text-slate-900">Create User</h2>
-              <p className="text-xs text-slate-500">
+              <h2 className="font-bold text-slate-900 dark:text-white">Create User</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 {isHead ? 'Create Admin or Employee in your region.' : 'Create a new dashboard user.'}
               </p>
             </div>
@@ -203,7 +203,7 @@ export default function UsersManager({
           <button
             type="button"
             onClick={() => setShowModal(false)}
-            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition"
+            className="p-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -215,7 +215,7 @@ export default function UsersManager({
         <form onSubmit={createUser} noValidate className="p-6 space-y-4">
           {/* Email or EmpCode — switches based on role */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               {isEmployeeRole ? 'Emp Code' : 'Email'}
             </label>
             {isEmployeeRole ? (
@@ -249,7 +249,7 @@ export default function UsersManager({
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Password</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Password</label>
             <div className="relative">
               <input
                 type={showCreatePw ? 'text' : 'password'}
@@ -284,7 +284,7 @@ export default function UsersManager({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Role</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Role</label>
               <AppSelect
                 value={form.role}
                 onChange={(v) => setForm((c) => ({
@@ -298,7 +298,7 @@ export default function UsersManager({
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Region</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Region</label>
               {isHead ? (
                 <input
                   value={currentProfile.region ?? ''}
@@ -334,7 +334,7 @@ export default function UsersManager({
             <button
               type="button"
               onClick={() => setShowModal(false)}
-              className="px-6 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition"
+              className="px-6 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
             >
               Cancel
             </button>
@@ -360,7 +360,7 @@ export default function UsersManager({
             placeholder="Search by email…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-red-400 focus:ring-4 focus:ring-red-100 focus:outline-none transition"
+            className="w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 pl-10 pr-4 py-2.5 text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-red-400 focus:ring-4 focus:ring-red-100 dark:focus:ring-red-900/30 focus:outline-none transition"
           />
         </div>
 
@@ -384,21 +384,21 @@ export default function UsersManager({
       )}
 
       {/* Users table */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between gap-3">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between gap-3">
           <div>
-            <h2 className="font-bold text-slate-900">Dashboard Users</h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <h2 className="font-bold text-slate-900 dark:text-white">Dashboard Users</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               {isHead ? 'Admin and Employee users in your region.' : 'Update role and region assignments below.'}
             </p>
           </div>
-          <span className="text-xs font-semibold text-slate-400 flex-shrink-0">
+          <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 flex-shrink-0">
             {filtered.length} {filtered.length === 1 ? 'user' : 'users'}
           </span>
         </div>
 
         {paginated.length === 0 ? (
-          <div className="py-16 flex flex-col items-center gap-3 text-slate-400">
+          <div className="py-16 flex flex-col items-center gap-3 text-slate-400 dark:text-slate-500">
             <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0" />
             </svg>
@@ -420,7 +420,7 @@ export default function UsersManager({
                   const showPw      = showPwIds.has(user.id);
                   const rowIsEmp    = edit.role === 'employee';
                   return (
-                    <tr key={user.id} className={`border-t border-slate-100 ${i % 2 === 1 ? 'bg-slate-50/50' : ''}`}>
+                    <tr key={user.id} className={`border-t border-slate-100 dark:border-slate-700 ${i % 2 === 1 ? 'bg-slate-50/50 dark:bg-slate-700/30' : ''}`}>
                       <td className="px-5 py-3">
                         {rowIsEmp ? (
                           <input
@@ -487,7 +487,7 @@ export default function UsersManager({
                             type="button"
                             tabIndex={-1}
                             onClick={() => toggleShowPw(user.id)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition"
                           >
                             {showPw ? (
                               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -502,7 +502,7 @@ export default function UsersManager({
                           </button>
                         </div>
                       </td>
-                      <td className="px-5 py-3 text-xs text-slate-500 whitespace-nowrap">
+                      <td className="px-5 py-3 text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">
                         {user.created_at ? new Date(user.created_at).toLocaleDateString() : '—'}
                       </td>
                       <td className="px-5 py-3">
@@ -525,15 +525,15 @@ export default function UsersManager({
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="border-t border-slate-100 px-5 py-4 flex items-center justify-between gap-4">
-            <p className="text-xs text-slate-500 font-medium">
+          <div className="border-t border-slate-100 dark:border-slate-700 px-5 py-4 flex items-center justify-between gap-4">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               Page {page} of {totalPages} &mdash; {filtered.length} {filtered.length === 1 ? 'user' : 'users'}
             </p>
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setPage(1)}
                 disabled={page === 1}
-                className="p-2 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                className="p-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition"
                 title="First page"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -543,7 +543,7 @@ export default function UsersManager({
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="p-2 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                className="p-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition"
                 title="Previous"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -561,7 +561,7 @@ export default function UsersManager({
                 }, [])
                 .map((item, idx) =>
                   item === 'ellipsis' ? (
-                    <span key={`e${idx}`} className="px-2 text-slate-400 text-xs">…</span>
+                    <span key={`e${idx}`} className="px-2 text-slate-400 dark:text-slate-500 text-xs">…</span>
                   ) : (
                     <button
                       key={item}
@@ -569,7 +569,7 @@ export default function UsersManager({
                       className={`min-w-[32px] h-8 px-2 rounded-lg text-xs font-bold transition ${
                         page === item
                           ? 'bg-red-600 text-white shadow-sm'
-                          : 'text-slate-600 hover:bg-slate-100'
+                          : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
                       }`}
                     >
                       {item}
@@ -580,7 +580,7 @@ export default function UsersManager({
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="p-2 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                className="p-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition"
                 title="Next"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -590,7 +590,7 @@ export default function UsersManager({
               <button
                 onClick={() => setPage(totalPages)}
                 disabled={page === totalPages}
-                className="p-2 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                className="p-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition"
                 title="Last page"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

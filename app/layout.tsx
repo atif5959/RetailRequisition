@@ -1,5 +1,6 @@
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
+import ThemeProvider from '@/components/ThemeProvider';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
 const SITE_NAME = 'TCS Retail Requisition';
@@ -59,20 +60,22 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor:  '#dc2626',
-  colorScheme: 'light',
+  colorScheme: 'light dark',
   width:       'device-width',
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Preconnect to external image CDN */}
         <link rel="preconnect" href="https://www.cognitoforms.com" />
         <link rel="dns-prefetch" href="https://www.cognitoforms.com" />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
     </html>
   );
 }
