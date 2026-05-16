@@ -1,5 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
+import LoginModal from '@/components/LoginModal';
 import DashboardNav from '@/components/DashboardNav';
 import StatusButtons from '@/components/StatusButtons';
 import QuantityEditor from '@/components/QuantityEditor';
@@ -19,7 +20,8 @@ const statusConfig: Record<string, { label: string; classes: string }> = {
 export default async function RequisitionDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const profile = await getCurrentProfile();
-  if (!profile) redirect('/dashboard/login');
+  if (!profile) return <LoginModal />;
+  if (profile.role === 'employee') redirect('/form/retail-requisition');
 
   const supabase = supabaseAdmin();
   const { data: submission } = await supabase.from('form_submissions').select('*').eq('id', id).single();
@@ -52,10 +54,10 @@ export default async function RequisitionDetail({ params }: { params: Promise<{ 
           </div>
         </header>
 
-        <main className="flex-1 p-8 space-y-6">
+        <main className="flex-1 p-4 sm:p-8 space-y-4 sm:space-y-6">
 
           {/* Meta + Actions */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Submitted</p>
               <p className="text-sm font-semibold text-slate-800">
@@ -67,10 +69,10 @@ export default async function RequisitionDetail({ params }: { params: Promise<{ 
 
           {/* Requester Details */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-100">
+            <div className="px-4 sm:px-6 py-4 border-b border-slate-100">
               <h2 className="font-bold text-slate-900">Requester Details</h2>
             </div>
-            <div className="p-6 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            <div className="p-4 sm:p-6 grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3">
               {retailHeaderFields.map((field) => (
                 <div key={field.key} className="bg-slate-50 rounded-xl p-4">
                   <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">{field.label}</p>

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseClient';
+import { getCurrentProfile } from '@/lib/auth';
 import { getInHandStockKey, requiredRetailFieldKeys, retailFieldLabels, retailHeaderFields, retailItems, retailSubmissionFieldOrder } from '@/lib/retailRequisitionFields';
 import { isPakistanRegion } from '@/lib/regions';
 
@@ -15,6 +16,11 @@ function normalizeQuantity(value: unknown) {
 }
 
 export async function POST(req: Request) {
+  const profile = await getCurrentProfile();
+  if (!profile) {
+    return NextResponse.json({ error: 'You must be logged in to submit a requisition.' }, { status: 401 });
+  }
+
   const body = await req.json().catch(() => null);
   if (!body || typeof body !== 'object') {
     return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
@@ -72,11 +78,16 @@ export async function POST(req: Request) {
     .single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  const rows = retailSubmissionFieldOrder.map((field_key) => ({
-    submission_id: submission.id,
-    field_key,
-    value: normalizedValues[field_key] ?? '',
-  }));
+  const rows = [
+    ...retailSubmissionFieldOrder.map((field_key) => ({
+      submission_id: submission.id,
+      field_key,
+      value: normalizedValues[field_key] ?? '',
+    })),
+    { submission_id: submission.id, field_key: 'SubmittedById',    value: profile.id },
+    { submission_id: submission.id, field_key: 'SubmittedByEmail', value: profile.email },
+    { submission_id: submission.id, field_key: 'SubmittedByRole',  value: profile.role },
+  ];
 
   const { error: valueError } = await supabase.from('form_submission_values').insert(rows);
   if (valueError) {

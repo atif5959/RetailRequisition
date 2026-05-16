@@ -3,24 +3,48 @@ import { getCurrentProfile } from '@/lib/auth';
 import { isPakistanRegion } from '@/lib/regions';
 import { supabaseAdmin } from '@/lib/supabaseClient';
 
-const validRoles = new Set(['admin', 'head']);
+const superAdminRoles = new Set(['admin', 'head', 'employee']);
+const headRoles       = new Set(['admin', 'employee']);
 
 export async function POST(req: Request) {
   const profile = await getCurrentProfile();
-  if (!profile || profile.role !== 'super_admin') {
-    return NextResponse.json({ error: 'Only super admins can create users.' }, { status: 403 });
+  if (!profile || (profile.role !== 'super_admin' && profile.role !== 'head')) {
+    return NextResponse.json({ error: 'Forbidden.' }, { status: 403 });
   }
 
-  const body = await req.json().catch(() => null);
-  const email = String(body?.email || '').trim().toLowerCase();
+  const body     = await req.json().catch(() => null);
+  const role     = String(body?.role     || 'admin');
+  const region   = String(body?.region   || '').trim() || null;
   const password = String(body?.password || '');
-  const role = String(body?.role || 'admin');
-  const region = String(body?.region || '').trim() || null;
 
-  if (!email) return NextResponse.json({ error: 'Email is required.' }, { status: 400 });
   if (password.length < 6) return NextResponse.json({ error: 'Password must be at least 6 characters.' }, { status: 400 });
-  if (!validRoles.has(role)) return NextResponse.json({ error: 'Invalid role.' }, { status: 400 });
-  if (!isPakistanRegion(region)) return NextResponse.json({ error: 'Please select a valid region.' }, { status: 400 });
+
+  /* For employees: empCode is the identifier; generate a system auth email */
+  const isEmployee = role === 'employee';
+  const empCode    = isEmployee ? String(body?.empCode || '').replace(/\D/g, '') : '';
+  const email      = isEmployee
+    ? `emp${empCode}@emp.internal`
+    : String(body?.email || '').trim().toLowerCase();
+  const displayEmail = isEmployee ? empCode : email;
+
+  if (isEmployee && !empCode) return NextResponse.json({ error: 'Emp Code is required.' }, { status: 400 });
+  if (!isEmployee && !email)  return NextResponse.json({ error: 'Email is required.' }, { status: 400 });
+
+  if (profile.role === 'head') {
+    if (!headRoles.has(role)) {
+      return NextResponse.json({ error: 'You can only create Admin or Employee users.' }, { status: 403 });
+    }
+    if (region !== profile.region) {
+      return NextResponse.json({ error: 'You can only create users within your own region.' }, { status: 403 });
+    }
+  } else {
+    if (!superAdminRoles.has(role)) {
+      return NextResponse.json({ error: 'Invalid role.' }, { status: 400 });
+    }
+    if (!isPakistanRegion(region)) {
+      return NextResponse.json({ error: 'Please select a valid region.' }, { status: 400 });
+    }
+  }
 
   const supabase = supabaseAdmin();
   const { data: authData, error: authError } = await supabase.auth.admin.createUser({
@@ -34,8 +58,8 @@ export async function POST(req: Request) {
   }
 
   const { error: profileError } = await supabase.from('profiles').insert({
-    id: authData.user.id,
-    email,
+    id:    authData.user.id,
+    email: displayEmail,
     role,
     region,
   });

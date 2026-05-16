@@ -23,55 +23,76 @@ export default function AppSelect({
   className = '',
   disabled = false,
 }: AppSelectProps) {
-  const [open, setOpen]     = useState(false);
-  const [rect, setRect]     = useState<DOMRect | null>(null);
-  const btnRef = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState(false);
+  const [rect, setRect] = useState<DOMRect | null>(null);
+  const btnRef  = useRef<HTMLButtonElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  // Close on outside click
+  // Close on outside pointer (mouse + touch)
   useEffect(() => {
     if (!open) return;
-    function handleClick(e: MouseEvent) {
+    function handlePointer(e: PointerEvent) {
       if (
         btnRef.current  && !btnRef.current.contains(e.target as Node) &&
         listRef.current && !listRef.current.contains(e.target as Node)
       ) setOpen(false);
     }
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
+    document.addEventListener('pointerdown', handlePointer);
+    return () => document.removeEventListener('pointerdown', handlePointer);
   }, [open]);
 
-  // Close on scroll / resize
+  // Reposition on scroll; close only if button leaves viewport. Close on resize.
   useEffect(() => {
     if (!open) return;
-    const close = () => setOpen(false);
-    window.addEventListener('scroll', close, true);
-    window.addEventListener('resize', close);
-    return () => { window.removeEventListener('scroll', close, true); window.removeEventListener('resize', close); };
+    function handleScroll(e: Event) {
+      if (listRef.current && listRef.current.contains(e.target as Node)) return;
+      if (!btnRef.current) return;
+      const r = btnRef.current.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > window.innerHeight) {
+        setOpen(false);
+      } else {
+        setRect(r);
+      }
+    }
+    const handleResize = () => setOpen(false);
+    window.addEventListener('scroll', handleScroll, true);
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true);
+      window.removeEventListener('resize', handleResize);
+    };
   }, [open]);
+
+  function updateRect() {
+    if (btnRef.current) setRect(btnRef.current.getBoundingClientRect());
+  }
 
   function toggle() {
     if (disabled) return;
-    if (!open && btnRef.current) setRect(btnRef.current.getBoundingClientRect());
+    if (!open) updateRect();
     setOpen((o) => !o);
   }
 
-  const selected    = options.find((o) => o.value === value);
+  const selected     = options.find((o) => o.value === value);
   const displayLabel = selected ? selected.label : placeholder;
-  const hasValue    = !!selected;
+  const hasValue     = !!selected;
 
-  // Position the portal dropdown below (or above if near bottom)
+  const viewportHeight =
+    typeof window !== 'undefined'
+      ? (window.visualViewport?.height ?? window.innerHeight)
+      : 600;
+
   const dropdownStyle: React.CSSProperties = rect ? (() => {
-    const spaceBelow = window.innerHeight - rect.bottom;
-    const dropH      = Math.min(options.length * 42 + 8, 240);
+    const spaceBelow = viewportHeight - rect.bottom;
+    const dropH      = Math.min(options.length * 44 + 8, 240);
     const openUp     = spaceBelow < dropH + 8 && rect.top > dropH + 8;
     return {
-      position:  'fixed',
-      left:      rect.left,
-      width:     rect.width,
-      zIndex:    9999,
+      position: 'fixed',
+      left:     rect.left,
+      width:    rect.width,
+      zIndex:   99999,
       ...(openUp
-        ? { bottom: window.innerHeight - rect.top + 4 }
+        ? { bottom: viewportHeight - rect.top + 4 }
         : { top:    rect.bottom + 4 }),
     };
   })() : {};
@@ -88,9 +109,8 @@ export default function AppSelect({
           <button
             key={opt.value}
             type="button"
-            onMouseDown={(e) => e.preventDefault()}
             onClick={() => { onChange(opt.value); setOpen(false); }}
-            className={`w-full text-left px-4 py-2.5 text-sm font-medium transition flex items-center gap-2
+            className={`w-full text-left px-4 py-3 text-sm font-medium transition flex items-center gap-2
               ${isSelected
                 ? 'bg-red-50 text-red-600 font-semibold'
                 : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'

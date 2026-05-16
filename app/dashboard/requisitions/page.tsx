@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import LoginModal from '@/components/LoginModal';
 import DashboardNav from '@/components/DashboardNav';
 import RequisitionsTable from '@/components/RequisitionsTable';
 import { getCurrentProfile } from '@/lib/auth';
@@ -8,7 +9,8 @@ export const dynamic = 'force-dynamic';
 
 export default async function RequisitionsPage() {
   const profile = await getCurrentProfile();
-  if (!profile) redirect('/dashboard/login');
+  if (!profile) return <LoginModal />;
+  if (profile.role === 'employee') redirect('/form/retail-requisition');
 
   const items = await getRetailItems();
 

@@ -1,26 +1,56 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import ApiLoader from '@/components/ApiLoader';
 import type { RetailItemRow } from '@/lib/getRetailItems';
 
 const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const PAGE_SIZE = 10;
 
 const cellInput =
   'w-full rounded-lg border border-red-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-900 focus:border-red-500 focus:ring-2 focus:ring-red-100 focus:outline-none transition';
 
-const addInput =
-  'w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-red-400 focus:bg-white focus:ring-4 focus:ring-red-100 focus:outline-none transition';
+const modalInput =
+  'w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-red-400 focus:bg-white focus:ring-4 focus:ring-red-100 focus:outline-none transition';
 
 export default function FieldManager({ items: initial }: { items: RetailItemRow[] }) {
-  const [items, setItems]         = useState<RetailItemRow[]>(initial);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editVals, setEditVals]   = useState({ label: '', price: '' });
-  const [savingId, setSavingId]   = useState<string | null>(null);
+  const [items, setItems]           = useState<RetailItemRow[]>(initial);
+  const [editingId, setEditingId]   = useState<string | null>(null);
+  const [editVals, setEditVals]     = useState({ label: '', price: '' });
+  const [savingId, setSavingId]     = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [addForm, setAddForm]     = useState({ label: '', price: '' });
-  const [adding, setAdding]       = useState(false);
-  const [addError, setAddError]   = useState('');
+
+  // Search & pagination
+  const [search, setSearch]   = useState('');
+  const [page, setPage]       = useState(1);
+
+  // Modal state
+  const [modalOpen, setModalOpen]   = useState(false);
+  const [addForm, setAddForm]       = useState({ label: '', price: '' });
+  const [adding, setAdding]         = useState(false);
+  const [addError, setAddError]     = useState('');
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return q ? items.filter((i) => i.label.toLowerCase().includes(q)) : items;
+  }, [items, search]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+  function handleSearch(val: string) {
+    setSearch(val);
+    setPage(1);
+  }
+
+  function openModal() {
+    setAddForm({ label: '', price: '' });
+    setAddError('');
+    setModalOpen(true);
+  }
+  function closeModal() { setModalOpen(false); }
 
   function startEdit(item: RetailItemRow) {
     setEditingId(item.id);
@@ -77,22 +107,135 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
       const data = await res.json().catch(() => ({}));
       if (!res.ok) { setAddError(data.error || 'Failed to add item'); return; }
       setItems((prev) => [...prev, data.item]);
-      setAddForm({ label: '', price: '' });
+      closeModal();
     } finally {
       setAdding(false);
     }
   }
 
-  return (
-    <div className="space-y-6">
+  const modal = modalOpen ? (
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+      <div className="absolute inset-0" onClick={closeModal} />
+      <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
 
+        {/* Close */}
+        <button
+          type="button"
+          onClick={closeModal}
+          className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 transition"
+          aria-label="Close"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        {/* Header */}
+        <div className="bg-[linear-gradient(135deg,#b91c1c_0%,#dc2626_50%,#ef4444_100%)] px-8 py-7">
+          <h2 className="text-xl font-extrabold text-white">Add New Item</h2>
+          <p className="text-red-100 text-sm mt-1">Appears on all future form submissions.</p>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={addItem} className="px-8 py-7 space-y-5">
+          <div className="space-y-1.5">
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Item Name
+            </label>
+            <input
+              placeholder="e.g. Bubble Wrap Roll"
+              value={addForm.label}
+              onChange={(e) => setAddForm((f) => ({ ...f, label: e.target.value }))}
+              required
+              autoFocus
+              className={modalInput}
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Unit Price (PKR)
+            </label>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+              value={addForm.price}
+              onChange={(e) => setAddForm((f) => ({ ...f, price: e.target.value }))}
+              required
+              className={modalInput}
+            />
+          </div>
+
+          {addError && (
+            <div className="flex items-start gap-2.5 bg-red-50 border border-red-200 text-red-700 text-sm font-medium rounded-xl px-4 py-3">
+              <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+              </svg>
+              <span>{addError}</span>
+            </div>
+          )}
+
+          <div className="flex gap-3 pt-1">
+            <button
+              type="submit"
+              disabled={adding}
+              className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition shadow disabled:opacity-60 disabled:cursor-not-allowed text-sm"
+            >
+              {adding ? <ApiLoader label="Adding" /> : 'Add Item'}
+            </button>
+            <button
+              type="button"
+              onClick={closeModal}
+              className="px-5 py-3 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  ) : null;
+
+  return (
+    <div>
       {/* Items table */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="px-6 py-5 border-b border-slate-100">
-          <h2 className="font-bold text-slate-900">Requisition Form Items</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            {items.length} item{items.length !== 1 ? 's' : ''} — changes take effect on new submissions
-          </p>
+
+        {/* Table header */}
+        <div className="px-4 sm:px-6 py-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 className="font-bold text-slate-900">Requisition Form Items</h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              {items.length} item{items.length !== 1 ? 's' : ''} — changes take effect on new submissions
+            </p>
+          </div>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            {/* Search */}
+            <div className="relative flex-1 sm:w-56">
+              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search items..."
+                value={search}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-red-400 focus:bg-white focus:ring-4 focus:ring-red-100 focus:outline-none transition"
+              />
+            </div>
+            <button
+              onClick={openModal}
+              className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2.5 rounded-xl transition shadow text-sm flex-shrink-0"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              <span className="hidden sm:inline">Add Item</span>
+              <span className="sm:hidden">Add</span>
+            </button>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -106,16 +249,18 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
               </tr>
             </thead>
             <tbody>
-              {items.length === 0 && (
+              {pageItems.length === 0 && (
                 <tr>
                   <td colSpan={4} className="px-5 py-12 text-center text-slate-400 text-sm">
-                    No items yet. Add one below.
+                    {search ? `No items match "${search}"` : 'No items yet. Click "Add Item" to create one.'}
                   </td>
                 </tr>
               )}
-              {items.map((item, i) => (
+              {pageItems.map((item, i) => {
+                const globalIndex = (currentPage - 1) * PAGE_SIZE + i;
+                return (
                 <tr key={item.id} className={`border-t border-slate-100 ${i % 2 === 1 ? 'bg-slate-50/50' : ''}`}>
-                  <td className="px-5 py-3 text-slate-400 text-xs font-mono">{i + 1}</td>
+                  <td className="px-5 py-3 text-slate-400 text-xs font-mono">{globalIndex + 1}</td>
 
                   <td className="px-5 py-3">
                     {editingId === item.id ? (
@@ -194,73 +339,56 @@ export default function FieldManager({ items: initial }: { items: RetailItemRow[
                     </div>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="px-4 sm:px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-xs text-slate-500">
+              Showing {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filtered.length)} of {filtered.length} item{filtered.length !== 1 ? 's' : ''}
+            </p>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition
+                    ${p === currentPage
+                      ? 'bg-red-600 text-white shadow'
+                      : 'border border-slate-200 text-slate-600 hover:bg-slate-50'
+                    }`}
+                >
+                  {p}
+                </button>
+              ))}
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Add new item */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-red-600 flex items-center justify-center flex-shrink-0">
-            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-          </div>
-          <div>
-            <h2 className="font-bold text-slate-900">Add New Item</h2>
-            <p className="text-xs text-slate-500">Appears on all future form submissions.</p>
-          </div>
-        </div>
-        <form onSubmit={addItem} className="p-6">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Item Name</label>
-              <input
-                placeholder="e.g. Bubble Wrap Roll"
-                value={addForm.label}
-                onChange={(e) => setAddForm((f) => ({ ...f, label: e.target.value }))}
-                required
-                className={addInput}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Unit Price (PKR)</label>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                placeholder="0.00"
-                value={addForm.price}
-                onChange={(e) => setAddForm((f) => ({ ...f, price: e.target.value }))}
-                required
-                className={addInput}
-              />
-            </div>
-          </div>
-          {addError && (
-            <p className="mt-3 text-sm font-semibold text-red-600">{addError}</p>
-          )}
-          <div className="mt-5">
-            <button
-              type="submit"
-              disabled={adding}
-              className="inline-flex items-center gap-2 bg-red-600 text-white font-bold px-6 py-2.5 rounded-full hover:bg-red-700 transition shadow disabled:opacity-60 disabled:cursor-not-allowed text-sm"
-            >
-              {adding ? <ApiLoader label="Adding" /> : (
-                <>
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                  </svg>
-                  Add Item
-                </>
-              )}
-            </button>
-          </div>
-        </form>
-      </div>
-
+      {typeof document !== 'undefined' && modal ? createPortal(modal, document.body) : null}
     </div>
   );
 }

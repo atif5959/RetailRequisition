@@ -119,7 +119,7 @@ export default function HomePage() {
           <nav className="flex items-center gap-6 text-sm font-semibold text-slate-600">
             <Link href="#how-it-works" className="hidden md:inline hover:text-red-600 transition">How It Works</Link>
             <Link href="#features" className="hidden md:inline hover:text-red-600 transition">Features</Link>
-            <AppButtonLink href="/dashboard/login" designKey="danger" className="text-sm px-5 py-2">
+            <AppButtonLink href="/dashboard/requisitions" designKey="danger" className="text-sm px-5 py-2">
               Admin Login
             </AppButtonLink>
           </nav>
@@ -145,7 +145,7 @@ export default function HomePage() {
                 Submit Requisition →
               </AppButtonLink>
               <AppButtonLink
-                href="/dashboard/login"
+                href="/dashboard/requisitions"
                 className="text-base px-7 py-3"
                 style={{ backgroundColor: '#0f172a', borderRadius: '9999px', color: '#fff', fontWeight: 700 }}
               >
@@ -251,7 +251,7 @@ export default function HomePage() {
           <p className="text-xs text-slate-500">© 2025 Retail Requisition System. All rights reserved.</p>
           <div className="flex gap-6 text-sm">
             <Link href="/form/retail-requisition" className="hover:text-white transition">Submit Form</Link>
-            <Link href="/dashboard/login" className="hover:text-white transition">Dashboard</Link>
+            <Link href="/dashboard/requisitions" className="hover:text-white transition">Dashboard</Link>
           </div>
         </div>
       </footer>

@@ -59,22 +59,24 @@ export default function QuantityEditor({
     }
   }
 
+  const grandTotalValue = isPending
+    ? formatAmount(grandTotal ?? 0)
+    : (valueMap.GrandTotal || '0.00');
+
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+
       {/* Card header */}
-      <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+      <div className="px-4 sm:px-6 py-4 border-b border-slate-100 flex items-center justify-between gap-3">
         <h2 className="font-bold text-slate-900">Submitted Items</h2>
-        <span className="text-lg font-extrabold text-red-600">
-          Grand Total:{' '}
-          {isPending
-            ? formatAmount(grandTotal ?? 0)
-            : (valueMap.GrandTotal || '0.00')}
+        <span className="text-base sm:text-lg font-extrabold text-red-600 whitespace-nowrap">
+          Grand Total: {grandTotalValue}
         </span>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[860px] text-sm">
+      {/* ── DESKTOP TABLE (sm and up) ── */}
+      <div className="hidden sm:block overflow-x-auto">
+        <table className="w-full min-w-[700px] text-sm">
           <thead className="bg-slate-900 text-left">
             <tr>
               <th className="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-300">Item</th>
@@ -91,7 +93,7 @@ export default function QuantityEditor({
                 <td className="px-5 py-3 text-right text-slate-600">
                   {valueMap[getInHandStockKey(item.key)] || '0'}
                 </td>
-                <td className="px-5 py-3">
+                <td className="px-5 py-3 w-32">
                   {isPending ? (
                     <input
                       type="number"
@@ -123,9 +125,58 @@ export default function QuantityEditor({
         </table>
       </div>
 
+      {/* ── MOBILE CARDS (below sm) ── */}
+      <div className="block sm:hidden divide-y divide-slate-100">
+        {items.map((item) => {
+          const inHand = valueMap[getInHandStockKey(item.key)] || '0';
+          const total  = isPending
+            ? formatAmount(getTotal(item))
+            : (valueMap[item.totalKey] || '0.00');
+          const price  = valueMap[item.priceKey] || '0.00';
+          const qty    = valueMap[item.key] || '0';
+
+          return (
+            <div key={item.key} className="px-4 py-4 space-y-3">
+              <p className="font-bold text-slate-900 text-sm">{item.label}</p>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="bg-slate-50 rounded-lg px-3 py-2">
+                  <p className="text-slate-400 font-semibold uppercase tracking-wide mb-0.5">In Hand</p>
+                  <p className="font-bold text-slate-700">{inHand}</p>
+                </div>
+                <div className="bg-slate-50 rounded-lg px-3 py-2">
+                  <p className="text-slate-400 font-semibold uppercase tracking-wide mb-0.5">Price</p>
+                  <p className="font-bold text-slate-700">{price}</p>
+                </div>
+                <div className="bg-slate-50 rounded-lg px-3 py-2">
+                  <p className="text-slate-400 font-semibold uppercase tracking-wide mb-1">Quantity</p>
+                  {isPending ? (
+                    <input
+                      type="number"
+                      min="0"
+                      step="1"
+                      value={quantities[item.key]}
+                      onChange={(e) =>
+                        setQuantities((q) => ({ ...q, [item.key]: e.target.value }))
+                      }
+                      className="w-full rounded-md border border-slate-200 bg-white px-2 py-1 text-right text-sm font-semibold text-slate-900 focus:border-red-400 focus:ring-2 focus:ring-red-100 focus:outline-none transition"
+                    />
+                  ) : (
+                    <p className="font-bold text-slate-700">{qty}</p>
+                  )}
+                </div>
+                <div className="bg-red-50 rounded-lg px-3 py-2">
+                  <p className="text-red-400 font-semibold uppercase tracking-wide mb-0.5">Total</p>
+                  <p className="font-bold text-red-700">{total}</p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
       {/* Save bar — only shown when pending */}
       {isPending && (
-        <div className="border-t border-slate-200 px-6 py-4 flex items-center gap-4 bg-slate-50">
+        <div className="border-t border-slate-200 px-4 sm:px-6 py-4 flex flex-wrap items-center gap-3 bg-slate-50">
           <button
             onClick={handleSave}
             disabled={saving}

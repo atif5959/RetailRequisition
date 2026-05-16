@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import LoginModal from '@/components/LoginModal';
 import DashboardNav from '@/components/DashboardNav';
 import UsersManager from '@/components/UsersManager';
 import { getCurrentProfile } from '@/lib/auth';
@@ -8,15 +9,21 @@ export const dynamic = 'force-dynamic';
 
 export default async function UsersPage() {
   const profile = await getCurrentProfile();
-  if (!profile) redirect('/dashboard/login');
-  if (profile.role !== 'super_admin') redirect('/dashboard/requisitions');
+  if (!profile) return <LoginModal />;
+  if (profile.role !== 'super_admin' && profile.role !== 'head') redirect('/dashboard/requisitions');
 
   const supabase = supabaseAdmin();
-  const { data: users } = await supabase
+  let query = supabase
     .from('profiles')
     .select('*')
-    .in('role', ['admin', 'head'])
+    .in('role', ['admin', 'head', 'employee'])
     .order('created_at', { ascending: false });
+
+  if (profile.role === 'head') {
+    query = query.in('role', ['admin', 'employee']).eq('region', profile.region);
+  }
+
+  const { data: users } = await query;
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-slate-50">
@@ -35,7 +42,7 @@ export default async function UsersPage() {
           </div>
         </header>
         <main className="flex-1 p-4 sm:p-8">
-          <UsersManager users={users || []} />
+          <UsersManager users={users || []} currentProfile={{ role: profile.role, region: profile.region ?? null }} />
         </main>
       </div>
     </div>

@@ -7,7 +7,7 @@ import { getInHandStockKey, retailHeaderFields } from '@/lib/retailRequisitionFi
 import type { RetailItem } from '@/lib/retailRequisitionFields';
 import { pakistanRegions } from '@/lib/regions';
 
-
+type CurrentUser = { id: string; email: string; role: string };
 
 type HeaderValues = Record<(typeof retailHeaderFields)[number]['key'], string>;
 type QuantityValues = Record<string, string>;
@@ -30,18 +30,30 @@ function formatAmount(value: number) {
 const inputClass =
   'w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-red-400 focus:ring-4 focus:ring-red-100 focus:outline-none transition';
 
+const inputReadonlyClass =
+  'w-full rounded-xl border border-slate-200 bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-500 cursor-not-allowed select-none';
+
 const numInputClass =
   'w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-right text-sm font-semibold text-slate-900 focus:border-red-400 focus:ring-4 focus:ring-red-100 focus:outline-none transition';
 
-export default function RetailRequisitionForm({ items }: { items: RetailItem[] }) {
+export default function RetailRequisitionForm({
+  items,
+  currentUser,
+}: {
+  items: RetailItem[];
+  currentUser: CurrentUser;
+}) {
+  const isEmployee = currentUser.role === 'employee';
+  const empCode    = isEmployee ? currentUser.email : '';
+
   const [headerValues, setHeaderValues] = useState<HeaderValues>({
-    Region: '', RouteCode: 'X', EmpCode: '', Location: '', Origin: '',
+    Region: '', RouteCode: 'X', EmpCode: empCode, Location: '', Origin: '',
   });
-  const [stocks, setStocks]       = useState<StockValues>({});
+  const [stocks, setStocks]         = useState<StockValues>({});
   const [quantities, setQuantities] = useState<QuantityValues>({});
-  const [loading, setLoading]     = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError]         = useState('');
+  const [loading, setLoading]       = useState(false);
+  const [submitted, setSubmitted]   = useState(false);
+  const [error, setError]           = useState('');
 
   const itemTotals = useMemo(() =>
     items.reduce<Record<string, number>>((acc, item) => {
@@ -62,8 +74,8 @@ export default function RetailRequisitionForm({ items }: { items: RetailItem[] }
     const values: Record<string, string> = { ...headerValues };
     items.forEach((item) => {
       const stockKey = getInHandStockKey(item.key);
-      values[stockKey]    = stocks[stockKey] || '';
-      values[item.key]    = quantities[item.key] || '';
+      values[stockKey]      = stocks[stockKey] || '';
+      values[item.key]      = quantities[item.key] || '';
       values[item.priceKey] = formatAmount(item.price);
       values[item.totalKey] = formatAmount(itemTotals[item.totalKey] || 0);
     });
@@ -73,12 +85,15 @@ export default function RetailRequisitionForm({ items }: { items: RetailItem[] }
       const res = await fetch('/api/submissions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ values }),
+        body: JSON.stringify({
+          values,
+          submittedBy: { id: currentUser.id, email: currentUser.email, role: currentUser.role },
+        }),
       });
 
       if (res.ok) {
         setSubmitted(true);
-        setHeaderValues({ Region: '', RouteCode: '', EmpCode: '', Location: '', Origin: '' });
+        setHeaderValues({ Region: '', RouteCode: 'X', EmpCode: empCode, Location: '', Origin: '' });
         setStocks({});
         setQuantities({});
       } else {
@@ -131,7 +146,15 @@ export default function RetailRequisitionForm({ items }: { items: RetailItem[] }
         <div className="p-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {retailHeaderFields.map((field) => (
             <label key={field.key} className="space-y-1.5">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">{field.label}</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                {field.label}
+                {field.key === 'EmpCode' && isEmployee && (
+                  <span className="text-[10px] font-bold bg-slate-200 text-slate-500 rounded px-1.5 py-0.5 uppercase tracking-wide">
+                    Auto-filled
+                  </span>
+                )}
+              </span>
+
               {field.key === 'Region' ? (
                 <AppSelect
                   value={headerValues[field.key]}
@@ -145,24 +168,42 @@ export default function RetailRequisitionForm({ items }: { items: RetailItem[] }
                   value={headerValues[field.key]}
                   onChange={(e) => {
                     const val = e.target.value;
-                    if (!val.startsWith('X')) return;
+                    if (!val.startsWith('X')) {
+                      setHeaderValues((c) => ({ ...c, RouteCode: 'X' }));
+                      return;
+                    }
+                    const suffix = val.slice(1);
+                    if (suffix !== '' && !/^\d+$/.test(suffix)) return;
                     setHeaderValues((c) => ({ ...c, RouteCode: val }));
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Backspace' && headerValues[field.key] === 'X') e.preventDefault();
                   }}
                   required
                   className={inputClass}
                 />
               ) : field.key === 'EmpCode' ? (
-                <input
-                  name={field.key}
-                  value={headerValues[field.key]}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/\D/g, '');
-                    setHeaderValues((c) => ({ ...c, EmpCode: val }));
-                  }}
-                  inputMode="numeric"
-                  required
-                  className={inputClass}
-                />
+                isEmployee ? (
+                  <input
+                    name={field.key}
+                    value={headerValues[field.key]}
+                    readOnly
+                    disabled
+                    className={inputReadonlyClass}
+                  />
+                ) : (
+                  <input
+                    name={field.key}
+                    value={headerValues[field.key]}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, '');
+                      setHeaderValues((c) => ({ ...c, EmpCode: val }));
+                    }}
+                    inputMode="numeric"
+                    required
+                    className={inputClass}
+                  />
+                )
               ) : field.key === 'Location' ? (
                 <input
                   name={field.key}
@@ -206,7 +247,6 @@ export default function RetailRequisitionForm({ items }: { items: RetailItem[] }
             const stockKey = getInHandStockKey(item.key);
             return (
               <div key={item.key} className="p-4 space-y-3">
-                {/* Name + Price */}
                 <div className="flex items-start justify-between gap-3">
                   <span className="text-sm font-bold text-slate-800 uppercase leading-snug flex-1">{item.label}</span>
                   <div className="text-right flex-shrink-0">
@@ -214,7 +254,6 @@ export default function RetailRequisitionForm({ items }: { items: RetailItem[] }
                     <p className="text-sm font-semibold text-slate-700">{formatAmount(item.price)}</p>
                   </div>
                 </div>
-                {/* In Hand Stock + Quantity */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-400">In Hand Stock</label>
@@ -241,7 +280,6 @@ export default function RetailRequisitionForm({ items }: { items: RetailItem[] }
                     />
                   </div>
                 </div>
-                {/* Total */}
                 <div className="flex items-center justify-between bg-red-50 rounded-lg px-3 py-2 border border-red-100">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Total</span>
                   <span className="text-sm font-bold text-red-600">{formatAmount(itemTotals[item.totalKey] || 0)}</span>

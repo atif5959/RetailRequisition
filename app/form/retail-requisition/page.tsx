@@ -1,9 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import RetailRequisitionForm from '@/components/RetailRequisitionForm';
+import FormLogoutButton from '@/components/FormLogoutButton';
+import LoginModal from '@/components/LoginModal';
 import { getRetailItems } from '@/lib/getRetailItems';
+import { getCurrentProfile } from '@/lib/auth';
 
-export const revalidate = 300; // re-fetch items every 5 minutes
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Submit a Retail Requisition',
@@ -18,9 +21,14 @@ export const metadata: Metadata = {
 };
 
 export default async function RetailFormPage() {
-  const items = await getRetailItems();
+  const profile = await getCurrentProfile();
+  const items   = await getRetailItems();
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
+
+      {/* Login modal — shown as overlay when not authenticated */}
+      {!profile && <LoginModal />}
 
       {/* Nav */}
       <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
@@ -32,12 +40,28 @@ export default async function RetailFormPage() {
               className="h-11 w-auto"
             />
           </Link>
-          <Link
-            href="/"
-            className="text-sm font-semibold text-slate-500 hover:text-red-600 transition flex items-center gap-1.5"
-          >
-            ← Back to Home
-          </Link>
+          {profile && (
+            <div className="flex items-center gap-3">
+              <span className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-slate-400">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                {profile.email}
+              </span>
+              {profile.role !== 'employee' && (
+                <Link
+                  href="/dashboard/requisitions"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-red-600 transition"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                  </svg>
+                  <span className="hidden sm:inline">Dashboard</span>
+                </Link>
+              )}
+              <FormLogoutButton />
+            </div>
+          )}
         </div>
       </header>
 
@@ -49,12 +73,17 @@ export default async function RetailFormPage() {
         </div>
       </div>
 
-      {/* Form */}
-      <main className="flex-1 py-6 sm:py-8 px-3 sm:px-6">
-        <div className="mx-auto max-w-7xl">
-          <RetailRequisitionForm items={items} />
-        </div>
-      </main>
+      {/* Form — only rendered when authenticated */}
+      {profile && (
+        <main className="flex-1 py-6 sm:py-8 px-3 sm:px-6">
+          <div className="mx-auto max-w-7xl">
+            <RetailRequisitionForm
+              items={items}
+              currentUser={{ id: profile.id, email: profile.email, role: profile.role }}
+            />
+          </div>
+        </main>
+      )}
 
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-500 py-6 px-6 text-center text-xs">
